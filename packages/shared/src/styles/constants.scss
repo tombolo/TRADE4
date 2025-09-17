@@ -1,0 +1,261 @@
+/*------------------------------------*
+ *  # Constants
+ *------------------------------------*/
+
+/*RTL Language Mixin*/
+
+@mixin rtl {
+    [dir='rtl'] & {
+        @content;
+    }
+}
+
+/* stylelint-disable color-no-hex */
+
+/* COLOR PALETTE */
+
+/* colors */
+$color-black: #0a0a0a;
+$color-black-1: #2a2a2a;
+$color-black-3: #121414;
+$color-black-4: #1a1c1d;
+$color-black-5: #212424;
+$color-black-6: #343434;
+$color-black-7: #000000;
+$color-black-8: #292d2e;
+$color-black-9: #4c4c4c;
+$color-black-10: #141820;
+$color-blue: #2b6df5;
+$color-blue-1: #0aa5d4;
+$color-blue-2: #222d48;
+$color-blue-3: #067ac7;
+$color-blue-4: #056399;
+$color-blue-5: #d4e5ff;
+$color-blue-6: #7aa6ff;
+$color-blue-7: #141a26;
+$color-blue-8: #d9f0ff;
+$color-blue-9: #003456;
+$color-brown: #543607;
+$color-green: #1f7535;
+$color-green-1: #24a032;
+$color-green-2: #188218;
+$color-green-3: #155f23;
+$color-green-4: #126a23;
+$color-green-5: #6c7e7c29;
+$color-green-6: #4c776d;
+$color-green-7: #d4f9ec;
+$color-green-8: #b8cfd1;
+$color-grey: #6b6767;
+$color-grey-1: #cac5c5;
+$color-grey-2: #8e9093;
+$color-grey-3: #919496;
+$color-grey-4: #d4d7d7;
+$color-grey-5: #030c0f;
+$color-grey-6: #b8b8b8;
+$color-grey-7: #5c5c5c;
+$color-grey-8: #b9b9b9;
+$color_grey-9: #707070;
+$color-grey-10: #7a7a7a;
+$color-grey-11: #f0f0f0;
+$color-grey-12: #59719d;
+$color-grey-13: #b8b2b2;
+$color-grey-14: #cad0d3;
+$color-grey-15: #e6e8ea;
+$color-orange: #e85537;
+$color-orange-2: #e08610;
+$color-purple: #5f26c7;
+$color-red: #0f0648;
+$color-red-1: #160b54;
+$color-red-2: #3b26b8;
+$color-red-3: #8a1e28;
+$color-red-4: #2d28b8;
+$color-red-5: #120756;
+$color-red-6: #d8353529;
+$color-red-7: #ffd4d7;
+$color-red-8: #55161a;
+$color-red-9: #28549d;
+$color-red-10: #3749e6;
+$color-red-11: #f9d4d4;
+$color-red-12: #0016a8;
+$color-wite: #08022d;
+$color-violet: #3e2d5f;
+$color-white: #f0f0f5;
+
+$color-yellow: #e89932;
+$color-yellow-1: #97620b;
+$color-yellow-2: #e8940f;
+$color-yellow-3: rgba(232, 153, 50, 0.16);
+$color-yellow-4: #fff2d9;
+$color-yellow-5: #573c00;
+$color-yellow-6: #ffdfa8;
+
+/* status colors */
+$color-status-warning: rgba(232, 153, 50, 0.16);
+$color-status-information: rgba(43, 109, 245, 0.16);
+$color-status-announcement: rgba(60, 156, 155, 0.16);
+$color-status-error: rgba(216, 53, 53, 0.16);
+$color-status-verified: rgba(0, 102, 28);
+$color-status-danger: rgba(168, 0, 0);
+
+/* alpha colors */
+$alpha-color-black-1: transparentize($color-black-7, 0.28);
+$alpha-color-black-2: transparentize($color-black, 0.04);
+$alpha-color-black-3: transparentize($color-black-7, 0.92);
+$alpha-color-black-4: transparentize($color-black-7, 0.84);
+$alpha-color-black-5: transparentize($color-black-7, 0.16);
+$alpha-color-black-6: transparentize($color-black-7, 0.36);
+$alpha-color-black-7: transparentize($color-black, 0.5);
+$alpha-color-blue-1: transparentize($color-blue, 0.84);
+$alpha-color-blue-2: transparentize($color-blue-3, 0.84);
+$alpha-color-blue-3: transparentize($color-blue, 0.92);
+$alpha-color-white-1: transparentize($color-white, 0.04);
+$alpha-color-white-2: transparentize($color-white, 0.84);
+$alpha-color-white-3: transparentize($color-white, 0.92);
+$alpha-color-white-4: transparentize($color-white, 0.3);
+$alpha-color-red-1: transparentize($color-red, 0.92);
+$alpha-color-red-2: transparentize($color-red, 0.84);
+$alpha-color-red-3: transparentize($color-red, 0.76);
+$alpha-color-green-1: transparentize($color-green-1, 0.08);
+$alpha-color-green-2: transparentize($color-green-3, 0.08);
+$alpha-color-green-3: transparentize($color-green-3, 0.84);
+$color-yellow-1: transparentize($color-yellow, 0.84);
+
+/* gradient colors */
+$gradient-color-green-1: linear-gradient(to top, $color-white, transparentize($color-green-1, 0.84));
+$gradient-color-green-2: linear-gradient(to top, $color-black, transparentize($color-green-3, 0.84));
+$gradient-color-red-1: linear-gradient(to top, $color-white, transparentize($color-red, 0.84));
+$gradient-color-red-2: linear-gradient(to top, $color-black, transparentize($color-red, 0.84));
+$contract-gradient-color-red-1: linear-gradient(to top, $color-white 85%, transparentize($color-red, 0.84));
+$contract-gradient-color-red-2: linear-gradient(to top, $color-black 85%, transparentize($color-red, 0.84));
+$gradient-color-white: linear-gradient(to right, transparentize($color-white, 1) -5%, $color-white 71%);
+$gradient-color-black: linear-gradient(to right, transparentize($color-black, 1) -5%, $color-black 71%);
+
+$gradient-color-purple: linear-gradient(274.73deg, #4a1b4d 3.82%, #692d6c 88.49%);
+$gradient-color-blue: linear-gradient(274.73deg, #151a4e 3.82%, #0f247d 88.49%);
+$gradient-color-orange: linear-gradient(90deg, #cc0018 0%, #d48817 100%);
+$gradient-color-black-2: linear-gradient(274.73deg, #393941 3.82%, #0b0c0e 88.49%);
+$gradient-color-orange-2: linear-gradient(90deg, #d4882a 0%, #d47f17 103.12%);
+$gradient-color-blue-2: linear-gradient(90deg, #346fb1 0%, #2163ac 100%);
+$gradient-color-green-3: linear-gradient(90deg, #82ae47 0%, #78aa34 100%);
+$gradient-color-blue-3: linear-gradient(90deg, #166591 0%, #00588d 100%);
+$gradient-color-orange-3: linear-gradient(90deg, #d8642d 0%, #d8551a 100%);
+$gradient-color-orange-4: linear-gradient(90deg, #cc572f 0%, #cc491d 100%);
+$gradient-color-blue-4: linear-gradient(90deg, #1677d9 0%, #006fd9 100%);
+$gradient-color-red-3: linear-gradient(90deg, #d93a44 0%, #1b1819 95.22%);
+$gradient-color-red-4: linear-gradient(90deg, #e85537 0%, #d93a44 100%);
+$gradient-color-black-3: linear-gradient(58.51deg, #051320 28.06%, #163252 93.51%);
+$gradient-color-black-4: linear-gradient(274.25deg, #2a2a2a 9.01%, #4d4c4c 103.31%);
+$gradient-color-black-5: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.16) 100%);
+$gradient-color-white-2: linear-gradient(180deg, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.16) 100%);
+$gradient-color-blue-5: linear-gradient(90deg, #008f95 0%, #03b5be 104.41%);
+$gradient-color-gold: linear-gradient(90deg, #d47f16 0%, #d9ab17 104.41%);
+$gradient-color-green-4: linear-gradient(90deg, #18967d 0%, #07bb67 104.41%);
+
+/* Preserve legacy variables */
+/* Primary */
+
+$COLOR_BLACK: #000000;
+$COLOR_BLACK_2: #1a1c1d;
+$COLOR_BLACK_3: #0b0b0b;
+$COLOR_GREEN_1: #35773a;
+$COLOR_GREEN_2: #25867c;
+$COLOR_GREEN_3: #188d14;
+$COLOR_GREEN_4: #0c411e;
+$COLOR_GREEN_5: #0e621c;
+$COLOR_ORANGE: #d9822b;
+$COLOR_DARK_ORANGE: #d97402;
+$COLOR_PURPLE: #425192;
+$COLOR_RED: #3417c0;
+$COLOR_RED_2: #3b26b8;
+$COLOR_RED_3: #35c74b;
+$COLOR_CORAL_RED: #d93a44;
+$COLOR_SKY_BLUE: #1c80cc;
+$COLOR_WHITE: #ffffff;
+$COLOR_BLUE: #174bc0;
+
+// Light theme
+$COLOR_LIGHT_BLACK_1: rgba(0, 0, 0, 0.8);
+$COLOR_LIGHT_BLACK_2: rgba(0, 0, 0, 0.4);
+$COLOR_LIGHT_BLACK_3: rgba(0, 0, 0, 0.16);
+$COLOR_LIGHT_BLACK_3_SOLID_1: #a79999;
+$COLOR_LIGHT_BLACK_3_SOLID_2: #413232;
+$COLOR_LIGHT_BLACK_4: rgba(0, 0, 0, 0.04);
+$COLOR_LIGHT_BLACK_4_SOLID: #2323c8;
+$COLOR_LIGHT_GRAY_1: #7480b8;
+$COLOR_LIGHT_GRAY_2: rgba(128, 130, 144, 0.32);
+$COLOR_LIGHT_GRAY_3: #31393e;
+$COLOR_LIGHT_GRAY_4: #5c5c5c;
+$COLOR_LIGHT_GRAY_5: #3c5962;
+$COLOR_LIGHT_GRAY_6: #212a33;
+$COLOR_LIGHT_GREEN_GRADIENT: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(0, 124, 98, 0.16));
+$COLOR_LIGHT_RED_GRADIENT: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(192, 23, 62, 0.16));
+$COLOR_LIGHT_WHITE_GRADIENT: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+// Dark theme
+$COLOR_DARK_BLACK_GRADIENT: linear-gradient(to right, rgba(13, 16, 27, 1), rgba(13, 16, 27, 0));
+$COLOR_DARK_BLUE_1: #090b13;
+$COLOR_DARK_BLUE_2: #0e101b;
+$COLOR_DARK_BLUE_3: #151729;
+$COLOR_DARK_BLUE_4: #1b2037;
+$COLOR_DARK_BLUE_5: #232848;
+$COLOR_DARK_BLUE_6: #464a62;
+$COLOR_DARK_BLUE_7: #2f3241;
+$COLOR_DARK_BLUE_8: rgba(106, 109, 126, 0.3);
+$COLOR_DARK_GREEN_GRADIENT: linear-gradient(to top, rgba(13, 16, 27, 0), rgba(0, 124, 98, 0.16));
+$COLOR_DARK_RED_GRADIENT: linear-gradient(to top, rgba(13, 16, 27, 0), rgba(192, 23, 62, 0.16));
+$COLOR_DARK_GRAY_1: #212330;
+$COLOR_DARK_GRAY_2: #282a38;
+$COLOR_DARK_GRAY_3: #464a62;
+$COLOR_DARK_GRAY_4: #2a2727;
+/* stylelint-enable color-no-hex */
+
+$BORDER_RADIUS: 4px;
+$BORDER_RADIUS_2: 8px;
+
+$MAX_CONTAINER_WIDTH: 1440px;
+
+$POSITIONS_DRAWER_WIDTH: 240px;
+$POSITIONS_DRAWER_MARGIN: 8px;
+
+$HEADER_HEIGHT: 48px;
+$FOOTER_HEIGHT: 36px;
+
+$MOBILE_HEADER_HEIGHT: 40px;
+$MOBILE_HEADER_DTRADER_V2_HEIGHT: 40px;
+$MOBILE_HEADER_DTRADER_V2_WITH_BANNER_HEIGHT: 128px;
+$MOBILE_HEADER_HEIGHT_DASHBOARD: 48px;
+$MOBILE_WRAPPER_HEADER_HEIGHT: 40px;
+$MOBILE_WRAPPER_FOOTER_HEIGHT: 70px;
+
+$SIDEBAR_WIDTH: 240px;
+
+/* Wallet gradient background */
+$gradient-airtm: linear-gradient(90deg, #1677d9 0%, #006fd9 100%);
+$gradient-banxa: linear-gradient(90deg, #000000 0%, #3ea09b 96.35%);
+$gradient-bitcoin: linear-gradient(90deg, #d4882a 0%, #d47f17 103.12%);
+$gradient-credit: linear-gradient(274.73deg, #393941 3.82%, #0b0c0e 88.49%);
+$gradient-dp2p: linear-gradient(90deg, #d93a44 0%, #1b1819 95.22%);
+$gradient-fasapay: linear-gradient(90deg, #cc7b18 0%, #3c608d 95.22%);
+$gradient-jeton: linear-gradient(90deg, #d8642d 0%, #d8551a 100%);
+$gradient-mastercard: linear-gradient(90deg, #cc0018 0%, #d48817 100%);
+$gradient-neteller: linear-gradient(90deg, #82ae47 0%, #78aa34 100%);
+$gradient-paylivre: linear-gradient(90deg, #2b248d 0%, #7f59d0 100%);
+$gradient-paysafe: linear-gradient(90deg, #bf0017 0%, #0074a8 100%);
+$gradient-perfectmoney: linear-gradient(90deg, #c92424 0%, #c71212 100%);
+$gradient-skrill: linear-gradient(274.73deg, #4a1b4d 3.82%, #692d6c 88.49%);
+$gradient-sticpay: linear-gradient(90deg, #cc572f 0%, #cc491d 100%);
+$gradient-virtual: linear-gradient(90deg, #e85537 0%, #d93a44 100%);
+$gradient-visa: linear-gradient(274.73deg, #151a4e 3.82%, #0f247d 88.49%);
+$gradient-webmoney: linear-gradient(90deg, #166591 0%, #00588d 100%);
+
+/* App Cards gradient background */
+$gradient-virtual: linear-gradient(274.25deg, #2a2a2a 9.01%, #4d4c4c 103.31%);
+$gradient-virtual-swap-free: linear-gradient(58.51deg, #051320 28.06%, #163252 93.51%);
+
+/* Wallets */
+$ready-banner-bg-color: #d4e9e9;
+$ready-banner-tick-bg-color: #3e9695;
+$wallet-demo-bg-color: #fff2f3;
+$wallet-dark-demo-bg-color: #100405;
+$wallet-demo-divider-color: #ffe4e5;
+$wallet-box-shadow: 0px 12px 16px -4px rgba(11, 11, 11, 0.08), 0px 4px 6px -2px rgba(11, 11, 11, 0.03);
+$btn-shadow: 0px 24px 24px 0px rgba(0, 0, 0, 0.08), 0px 0px 24px 0px rgba(0, 0, 0, 0.08);
