@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import './GlobalLoading.scss';
+import LogoImage from './Logo/ANALYTICS.png';
 
 const GlobalLoading = () => {
     const [progress, setProgress] = useState(0);
@@ -184,17 +185,32 @@ const GlobalLoading = () => {
                     className='logo-wrapper'
                     animate={{
                         rotateY: [0, 360],
+                        scale: [1, 1.05, 1],
                     }}
                     transition={{
                         duration: 20,
                         repeat: Infinity,
-                        ease: 'linear',
+                        ease: 'easeInOut',
                     }}
                 >
-                    <div className='logo'>
-                        TRADE<span>ALYTICS</span>
-                    </div>
+                    <motion.div
+                        className='logo-image-container'
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{
+                            scale: 1,
+                            opacity: 1,
+                            transition: { delay: 0.3, duration: 0.8 },
+                        }}
+                        whileHover={{
+                            scale: 1.05,
+                            transition: { duration: 0.3 },
+                        }}
+                    >
+                        <img src={LogoImage} alt='TRADEALYTICS' className='logo-image' />
+                        <div className='logo-shine'></div>
+                    </motion.div>
                 </motion.div>
+
                 <motion.div
                     className='logo-glow'
                     animate={{
@@ -218,6 +234,32 @@ const GlobalLoading = () => {
                             duration: 3,
                             repeat: Infinity,
                             delay: i * 0.8,
+                        }}
+                    />
+                ))}
+
+                {/* Floating particles around logo */}
+                {Array.from({ length: 8 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className='logo-particle'
+                        initial={{
+                            scale: 0,
+                            x: 0,
+                            y: 0,
+                            opacity: 0,
+                        }}
+                        animate={{
+                            scale: [0, 1, 0],
+                            x: Math.cos((i / 8) * Math.PI * 2) * 80,
+                            y: Math.sin((i / 8) * Math.PI * 2) * 80,
+                            opacity: [0, 1, 0],
+                        }}
+                        transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            delay: i * 0.2,
+                            ease: 'easeInOut',
                         }}
                     />
                 ))}

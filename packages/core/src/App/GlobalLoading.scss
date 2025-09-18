@@ -118,34 +118,65 @@
     margin-bottom: 1.5rem;
     z-index: 3;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
     .logo-wrapper {
       transform-style: preserve-3d;
       perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     
-    .logo {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #FFFFFF;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    .logo-image-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.05) 70%, transparent 100%);
+      box-shadow: 
+        0 0 60px rgba(255, 215, 0, 0.3),
+        0 0 100px rgba(255, 215, 0, 0.1),
+        inset 0 0 30px rgba(255, 215, 0, 0.2);
+      padding: 20px;
       
-      span {
-        color: #FFD700;
-        text-shadow: 0 0 15px #FFD700;
+      .logo-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+        border-radius: 50%;
+      }
+      
+      .logo-shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(255, 255, 255, 0.4) 50%, transparent 60%);
+        animation: logoShine 4s infinite linear;
+        border-radius: 50%;
+        pointer-events: none;
       }
     }
 
     .logo-glow {
       position: absolute;
-      width: 150px;
-      height: 150px;
+      width: 250px;
+      height: 250px;
       background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
       z-index: -1;
+      filter: blur(20px);
     }
 
     .gold-ring {
@@ -153,12 +184,23 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      width: 200px;
+      height: 200px;
       border: 2px solid #FFD700;
       border-radius: 50%;
       z-index: -2;
+      box-shadow: 0 0 20px #FFD700;
+      pointer-events: none;
+    }
+    
+    .logo-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #FFD700;
+      border-radius: 50%;
       box-shadow: 0 0 10px #FFD700;
+      pointer-events: none;
     }
   }
 
@@ -572,6 +614,11 @@
   50% { transform: translateY(-8px); }
 }
 
+@keyframes logoShine {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 // Media queries for responsiveness
 @media (max-width: 768px) {
   .global-loading {
@@ -617,18 +664,19 @@
       margin-bottom: 1rem;
     }
     
-    .logo {
-      font-size: 1.8rem !important;
+    .logo-image-container {
+      width: 140px !important;
+      height: 140px !important;
     }
     
     .gold-ring {
-      width: 120px !important;
-      height: 120px !important;
+      width: 160px !important;
+      height: 160px !important;
     }
     
     .logo-glow {
-      width: 130px !important;
-      height: 130px !important;
+      width: 200px !important;
+      height: 200px !important;
     }
     
     .trading-indicators {
@@ -671,18 +719,19 @@
 
 @media (max-width: 480px) {
   .global-loading {
-    .logo {
-      font-size: 1.5rem !important;
+    .logo-image-container {
+      width: 120px !important;
+      height: 120px !important;
     }
     
     .gold-ring {
-      width: 100px !important;
-      height: 100px !important;
+      width: 140px !important;
+      height: 140px !important;
     }
     
     .logo-glow {
-      width: 110px !important;
-      height: 110px !important;
+      width: 170px !important;
+      height: 170px !important;
     }
     
     .live-chart {
@@ -724,8 +773,9 @@
 
 @media (max-width: 360px) {
   .global-loading {
-    .logo {
-      font-size: 1.3rem !important;
+    .logo-image-container {
+      width: 100px !important;
+      height: 100px !important;
     }
     
     .market-data-grid {
