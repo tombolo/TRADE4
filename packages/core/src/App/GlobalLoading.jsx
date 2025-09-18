@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import './GlobalLoading.scss';
-import LOGO from './Logo/ANALYTICS.png';
 
 const GlobalLoading = () => {
     const [progress, setProgress] = useState(0);
@@ -10,35 +9,40 @@ const GlobalLoading = () => {
     const [marketData, setMarketData] = useState({
         eurusd: `1.08${Math.floor(Math.random() * 9)}`,
         btcusd: `6${Math.floor(Math.random() * 9000) + 1000}`,
-        volatility: `75.${Math.floor(Math.random() * 9)}%`,
+        sp500: `${Math.floor(Math.random() * 100) + 4500}.${Math.floor(Math.random() * 99)}`,
     });
-    const [codeLines, setCodeLines] = useState([]);
+    const [candleData, setCandleData] = useState([]);
     const containerRef = useRef(null);
 
     useEffect(() => {
-        // Generate random code lines for background
-        const generateCodeLines = () => {
-            const lines = [];
-            const commands = ['ACCESS', 'ENCRYPT', 'DECRYPT', 'EXECUTE', 'ANALYZE', 'INITIALIZE'];
-            const protocols = ['SECURE_PROTOCOL', 'TRADING_SYSTEM', 'MARKET_DATA', 'AUTH_SYSTEM'];
+        // Generate initial candle data
+        const generateCandleData = () => {
+            const candles = [];
+            let baseValue = 100;
 
             for (let i = 0; i < 20; i++) {
-                const command = commands[Math.floor(Math.random() * commands.length)];
-                const protocol = protocols[Math.floor(Math.random() * protocols.length)];
-                const value = Math.floor(Math.random() * 10000);
-                lines.push(`${command} ${protocol} ${value}`);
+                const volatility = 2 + Math.random() * 5;
+                const open = baseValue;
+                const close = open + (Math.random() - 0.5) * volatility;
+                const high = Math.max(open, close) + Math.random() * volatility;
+                const low = Math.min(open, close) - Math.random() * volatility;
+                const isGrowing = close > open;
+
+                candles.push({ open, high, low, close, isGrowing });
+                baseValue = close;
             }
-            return lines;
+
+            return candles;
         };
 
-        setCodeLines(generateCodeLines());
+        setCandleData(generateCandleData());
 
         // Update market data every 1.5 seconds
         const marketInterval = setInterval(() => {
             setMarketData({
                 eurusd: `1.08${Math.floor(Math.random() * 9)}`,
-                btcusd: `6${Math.floor(Math.random() * 9000) + 1000}`,
-                volatility: `75.${Math.floor(Math.random() * 9)}%`,
+                btcusd: `${Math.floor(Math.random() * 10) + 60},${Math.floor(Math.random() * 900) + 100}`,
+                sp500: `${Math.floor(Math.random() * 100) + 4500}.${Math.floor(Math.random() * 99)}`,
             });
         }, 1500);
 
@@ -70,80 +74,23 @@ const GlobalLoading = () => {
         <div className='global-loading' ref={containerRef}>
             {/* Golden grid background */}
             <div className='golden-grid'>
-                {Array.from({ length: 50 }).map((_, i) => (
+                {Array.from({ length: 100 }).map((_, i) => (
                     <motion.div
                         key={i}
                         className='grid-line'
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.1 }}
-                        transition={{ duration: 1, delay: i * 0.02 }}
+                        animate={{ opacity: 0.05 }}
+                        transition={{ duration: 1, delay: i * 0.01 }}
                     />
                 ))}
             </div>
 
-            {/* Binary matrix rain */}
-            <div className='binary-matrix'>
-                {Array.from({ length: 40 }).map((_, i) => (
+            {/* Floating trading elements */}
+            <div className='trading-elements'>
+                {['📈', '💹', '📊', '📉', '💲', '💰', '🔍', '⚖️'].map((emoji, i) => (
                     <motion.div
                         key={i}
-                        className='binary-column'
-                        initial={{ y: -100, opacity: 0 }}
-                        animate={{
-                            y: window.innerHeight + 100,
-                            opacity: [0, 0.8, 0],
-                        }}
-                        transition={{
-                            duration: 8 + Math.random() * 5,
-                            repeat: Infinity,
-                            delay: Math.random() * 3,
-                        }}
-                        style={{ left: `${Math.random() * 100}%` }}
-                    >
-                        {Array.from({ length: 20 }).map((_, j) => (
-                            <div
-                                key={j}
-                                className={`binary-digit ${Math.random() > 0.7 ? 'gold' : ''}`}
-                                style={{ animationDelay: `${j * 0.1}s` }}
-                            >
-                                {Math.round(Math.random())}
-                            </div>
-                        ))}
-                    </motion.div>
-                ))}
-            </div>
-
-            {/* Hacking particles */}
-            <div className='hacking-particles'>
-                {Array.from({ length: 30 }).map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className='particle'
-                        initial={{
-                            x: Math.random() * window.innerWidth,
-                            y: Math.random() * window.innerHeight,
-                            scale: 0,
-                        }}
-                        animate={{
-                            x: Math.random() * window.innerWidth,
-                            y: Math.random() * window.innerHeight,
-                            scale: [0, 1, 0],
-                            opacity: [0, 1, 0],
-                        }}
-                        transition={{
-                            duration: 3 + Math.random() * 4,
-                            repeat: Infinity,
-                            delay: Math.random() * 2,
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* 3D floating elements */}
-            <div className='floating-elements'>
-                {['🔒', '💎', '📊', '🔑', '⚡'].map((emoji, i) => (
-                    <motion.div
-                        key={i}
-                        className='floating-element'
+                        className='trading-element'
                         initial={{
                             y: 100,
                             opacity: 0,
@@ -165,11 +112,37 @@ const GlobalLoading = () => {
                             ease: 'linear',
                         }}
                         style={{
-                            left: `${15 + i * 15}%`,
+                            left: `${10 + i * 10}%`,
                             color: i % 2 === 0 ? '#FFD700' : '#FFFFFF',
                         }}
                     >
                         {emoji}
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Animated candlestick chart background */}
+            <div className='chart-background'>
+                {candleData.map((candle, i) => (
+                    <motion.div
+                        key={i}
+                        className='background-candle'
+                        initial={{ scaleY: 0, opacity: 0 }}
+                        animate={{
+                            scaleY: 1,
+                            opacity: 0.1,
+                            transition: { delay: i * 0.1, duration: 0.5 },
+                        }}
+                        style={{
+                            left: `${i * 5}%`,
+                            height: `${candle.high - candle.low}%`,
+                            top: `${candle.low}%`,
+                        }}
+                    >
+                        <div
+                            className={`candle-body ${candle.isGrowing ? 'bullish' : 'bearish'}`}
+                            style={{ height: `${Math.abs(candle.close - candle.open)}%` }}
+                        />
                     </motion.div>
                 ))}
             </div>
@@ -203,13 +176,9 @@ const GlobalLoading = () => {
                         ease: 'linear',
                     }}
                 >
-                    <motion.img
-                        src={LOGO}
-                        alt='Analytics Logo'
-                        className='logo'
-                        whileHover={{ scale: 1.05, rotate: 2 }}
-                        transition={{ duration: 0.3 }}
-                    />
+                    <div className='logo'>
+                        TRADE<span>ALYTICS</span>
+                    </div>
                 </motion.div>
                 <motion.div
                     className='logo-glow'
@@ -241,9 +210,9 @@ const GlobalLoading = () => {
 
             {showElements && (
                 <div className='content-wrapper'>
-                    {/* Hacking terminal */}
+                    {/* Trading terminal */}
                     <motion.div
-                        className='hacking-terminal'
+                        className='trading-terminal'
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         transition={{ delay: 0.5, duration: 0.8 }}
@@ -254,7 +223,8 @@ const GlobalLoading = () => {
                                 <span className='dot yellow'></span>
                                 <span className='dot green'></span>
                             </div>
-                            <span className='terminal-title'>SECURE_SYSTEM_INIT</span>
+                            <span className='terminal-title'>MARKET_DATA_STREAM</span>
+                            <span className='terminal-status'>LIVE</span>
                         </div>
                         <div className='terminal-content'>
                             <motion.div
@@ -263,7 +233,7 @@ const GlobalLoading = () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.8 }}
                             >
-                                <span className='prompt'>$</span> Initializing secure encryption protocols...
+                                <span className='prompt'>$</span> Connecting to market data feed...
                             </motion.div>
                             <motion.div
                                 className='terminal-line'
@@ -271,7 +241,7 @@ const GlobalLoading = () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 1.5 }}
                             >
-                                <span className='prompt'>$</span> Establishing quantum-safe connection...
+                                <span className='prompt'>$</span> Analyzing current market conditions...
                             </motion.div>
                             <motion.div
                                 className='terminal-line'
@@ -279,102 +249,117 @@ const GlobalLoading = () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 2.2 }}
                             >
-                                <span className='prompt'>$</span> Authenticating with blockchain verification...
-                            </motion.div>
-                            <motion.div
-                                className='terminal-line'
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 2.9 }}
-                            >
-                                <span className='prompt'>$</span> Loading market prediction algorithms...
+                                <span className='prompt'>$</span> Loading trading algorithms...
                             </motion.div>
                             <motion.div
                                 className='terminal-line blinking'
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 3.6 }}
+                                transition={{ delay: 2.9 }}
                             >
                                 <span className='prompt'>$</span> _
                             </motion.div>
                         </div>
                     </motion.div>
 
-                    {/* Candle progress chart */}
+                    {/* Live candlestick chart */}
                     <motion.div
-                        className='candle-chart'
+                        className='live-chart'
                         initial={{ opacity: 0, y: 40, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ delay: 1.2, duration: 0.7 }}
                     >
+                        <div className='chart-header'>
+                            <span className='chart-title'>BTC/USD • 5M</span>
+                            <span className='chart-price'>${marketData.btcusd}</span>
+                        </div>
                         <div className='chart-container'>
-                            <div className='candles'>
-                                {Array.from({ length: 15 }).map((_, i) => (
+                            <div className='candlestick-chart'>
+                                {candleData.map((candle, i) => (
                                     <motion.div
                                         key={i}
-                                        className='candle'
+                                        className='candlestick'
                                         initial={{ scaleY: 0, opacity: 0 }}
                                         animate={{
-                                            scaleY: [0, 1, 0.8, 1],
-                                            opacity: [0, 1, 1, 1],
+                                            scaleY: 1,
+                                            opacity: 1,
+                                            transition: { delay: i * 0.1, duration: 0.5 },
                                         }}
-                                        transition={{
-                                            duration: 0.5,
-                                            delay: i * 0.1,
-                                            repeat: Infinity,
-                                            repeatDelay: 1,
-                                        }}
+                                        whileHover={{ scaleY: 1.05, transition: { duration: 0.2 } }}
                                     >
-                                        <div className='wick'></div>
-                                        <div className={`flame ${i % 3 === 0 ? 'gold' : ''}`}></div>
+                                        <div
+                                            className='wick'
+                                            style={{
+                                                height: `${candle.high - candle.low}%`,
+                                                top: `${candle.low}%`,
+                                            }}
+                                        />
+                                        <div
+                                            className={`body ${candle.isGrowing ? 'bullish' : 'bearish'}`}
+                                            style={{
+                                                height: `${Math.abs(candle.close - candle.open)}%`,
+                                                top: `${Math.min(candle.open, candle.close)}%`,
+                                            }}
+                                        />
                                     </motion.div>
                                 ))}
                             </div>
                         </div>
-
-                        {/* Market data */}
-                        <div className='market-ticker'>
-                            <div className='ticker-item'>
-                                <span className='ticker-label'>EUR/USD</span>
-                                <motion.span
-                                    className='ticker-value'
-                                    key={`eurusd-${marketData.eurusd}`}
-                                    initial={{ y: 10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: -10, opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    {marketData.eurusd}
-                                </motion.span>
-                            </div>
-                            <div className='ticker-item'>
-                                <span className='ticker-label'>BTC/USD</span>
-                                <motion.span
-                                    className='ticker-value'
-                                    key={`btcusd-${marketData.btcusd}`}
-                                    initial={{ y: 10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: -10, opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    {marketData.btcusd}
-                                </motion.span>
-                            </div>
-                            <div className='ticker-item'>
-                                <span className='ticker-label'>Volatility</span>
-                                <motion.span
-                                    className='ticker-value'
-                                    key={`vol-${marketData.volatility}`}
-                                    initial={{ y: 10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    exit={{ y: -10, opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    {marketData.volatility}
-                                </motion.span>
+                        <div className='chart-footer'>
+                            <div className='time-markers'>
+                                <span>09:30</span>
+                                <span>11:30</span>
+                                <span>13:30</span>
+                                <span>15:30</span>
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Market data */}
+                    <div className='market-data-grid'>
+                        <div className='data-card'>
+                            <span className='data-label'>EUR/USD</span>
+                            <motion.span
+                                className='data-value'
+                                key={`eurusd-${marketData.eurusd}`}
+                                initial={{ y: 10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -10, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {marketData.eurusd}
+                            </motion.span>
+                            <span className='data-change positive'>+0.12%</span>
+                        </div>
+                        <div className='data-card'>
+                            <span className='data-label'>BTC/USD</span>
+                            <motion.span
+                                className='data-value'
+                                key={`btcusd-${marketData.btcusd}`}
+                                initial={{ y: 10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -10, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                ${marketData.btcusd}
+                            </motion.span>
+                            <span className='data-change negative'>-1.24%</span>
+                        </div>
+                        <div className='data-card'>
+                            <span className='data-label'>S&P 500</span>
+                            <motion.span
+                                className='data-value'
+                                key={`sp500-${marketData.sp500}`}
+                                initial={{ y: 10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -10, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {marketData.sp500}
+                            </motion.span>
+                            <span className='data-change positive'>+0.68%</span>
+                        </div>
+                    </div>
 
                     {/* Progress section */}
                     <div className='progress-section'>
@@ -407,14 +392,14 @@ const GlobalLoading = () => {
                             </motion.div>
                             <div className='progress-labels'>
                                 <span className='progress-text'>{Math.round(progress)}%</span>
-                                <span className='progress-message'>Initializing secure trading environment...</span>
+                                <span className='progress-message'>Loading trading dashboard...</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Hacking indicators */}
-                    <div className='hacking-indicators'>
-                        {Array.from({ length: 5 }).map((_, i) => (
+                    {/* Trading indicators */}
+                    <div className='trading-indicators'>
+                        {['RSI', 'MACD', 'VOL', 'EMA', 'BB'].map((indicator, i) => (
                             <motion.div
                                 key={i}
                                 className='indicator'
@@ -429,7 +414,9 @@ const GlobalLoading = () => {
                                     delay: i * 0.5,
                                 }}
                             >
-                                <div className='indicator-inner'></div>
+                                <div className='indicator-inner'>
+                                    <span>{indicator}</span>
+                                </div>
                             </motion.div>
                         ))}
                     </div>
@@ -458,7 +445,7 @@ const GlobalLoading = () => {
                             repeatType: 'reverse',
                         }}
                     >
-                        Securing your financial analytics environment...
+                        Preparing your advanced trading experience...
                     </motion.span>
                 </motion.div>
             </AnimatePresence>

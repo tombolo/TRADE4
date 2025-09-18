@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2a 50%, #0a0a1a 100%);
   color: #fff;
   overflow: hidden;
   position: relative;
-  font-family: 'Courier New', 'Monaco', 'Inconsolata', monospace;
+  font-family: 'Inter', 'Roboto', sans-serif;
   perspective: 1000px;
 
   /* Golden grid background */
@@ -21,20 +21,37 @@
     z-index: 1;
     pointer-events: none;
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(20, 1fr);
 
     .grid-line {
       border: 1px solid rgba(255, 215, 0, 0.1);
       
-      &:nth-child(3n) {
+      &:nth-child(5n) {
         border-color: rgba(255, 215, 0, 0.2);
       }
     }
   }
 
-  /* Binary matrix rain */
-  .binary-matrix {
+  /* Trading elements */
+  .trading-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+
+    .trading-element {
+      position: absolute;
+      font-size: 2rem;
+      text-shadow: 0 0 15px currentColor;
+      transform-style: preserve-3d;
+      opacity: 0.7;
+    }
+  }
+
+  /* Chart background */
+  .chart-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -42,59 +59,30 @@
     height: 100%;
     z-index: 1;
     pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 50px;
 
-    .binary-column {
-      position: absolute;
+    .background-candle {
+      position: relative;
+      width: 8px;
       display: flex;
-      flex-direction: column;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
+      justify-content: center;
 
-      .binary-digit {
-        color: rgba(0, 255, 0, 0.7);
-        text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-        opacity: 0;
-        animation: binaryFade 1s infinite;
+      .candle-body {
+        width: 6px;
+        position: absolute;
+        border-radius: 2px;
 
-        &.gold {
-          color: #FFD700;
-          text-shadow: 0 0 8px #FFD700;
+        &.bullish {
+          background: rgba(0, 200, 83, 0.2);
+        }
+
+        &.bearish {
+          background: rgba(255, 69, 58, 0.2);
         }
       }
-    }
-  }
-
-  /* Hacking particles */
-  .hacking-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #FFD700;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #FFD700;
-    }
-  }
-
-  /* 3D floating elements */
-  .floating-elements {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-
-    .floating-element {
-      position: absolute;
-      font-size: 2rem;
-      text-shadow: 0 0 15px currentColor;
-      transform-style: preserve-3d;
     }
   }
 
@@ -135,22 +123,27 @@
     }
     
     .logo {
-      width: 120px;
-      z-index: 2;
-      position: relative;
-      filter: drop-shadow(0 0 20px #FFD700) brightness(1.2);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      
+      span {
+        color: #FFD700;
+        text-shadow: 0 0 20px #FFD700;
+      }
     }
 
     .logo-glow {
       position: absolute;
-      width: 140px;
-      height: 140px;
+      width: 200px;
+      height: 200px;
       background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      z-index: 1;
+      z-index: -1;
     }
 
     .gold-ring {
@@ -158,29 +151,31 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 120px;
-      height: 120px;
+      width: 180px;
+      height: 180px;
       border: 2px solid #FFD700;
       border-radius: 50%;
-      z-index: 0;
+      z-index: -2;
       box-shadow: 0 0 15px #FFD700;
     }
   }
 
-  /* Hacking terminal */
-  .hacking-terminal {
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    padding: 1rem;
+  /* Trading terminal */
+  .trading-terminal {
+    background: rgba(15, 17, 28, 0.9);
+    border-radius: 12px;
+    padding: 1.2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
     backdrop-filter: blur(5px);
-    border: 1px solid #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     overflow: hidden;
-    font-family: 'Courier New', monospace;
+    font-family: 'Fira Code', 'Courier New', monospace;
     font-size: 14px;
     position: relative;
     z-index: 2;
+    width: 100%;
+    max-width: 600px;
 
     &::before {
       content: '';
@@ -227,14 +222,23 @@
         font-size: 12px;
         letter-spacing: 1px;
         text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        flex: 1;
+      }
+      
+      .terminal-status {
+        color: #00FF8C;
+        font-size: 11px;
+        padding: 2px 8px;
+        background: rgba(0, 255, 140, 0.1);
+        border-radius: 4px;
+        border: 1px solid rgba(0, 255, 140, 0.3);
       }
     }
 
     .terminal-content {
       .terminal-line {
         margin-bottom: 0.5rem;
-        color: #00FF8C;
-        text-shadow: 0 0 3px #00FF8C;
+        color: #FFFFFF;
         
         .prompt {
           color: #FFD700;
@@ -258,13 +262,16 @@
     max-width: 900px;
     z-index: 2;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  /* Candle chart */
-  .candle-chart {
-    background: rgba(0, 0, 0, 0.7);
+  /* Live chart */
+  .live-chart {
+    background: rgba(15, 17, 28, 0.9);
     border-radius: 16px;
-    padding: 2rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px);
@@ -272,141 +279,133 @@
     overflow: hidden;
     position: relative;
     z-index: 2;
+    width: 100%;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        transparent,
-        rgba(255, 215, 0, 0.03),
-        transparent
-      );
-      animation: terminalShimmer 6s infinite linear;
-      opacity: 0.5;
-      pointer-events: none;
-      z-index: 1;
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      
+      .chart-title {
+        color: #FFD700;
+        font-weight: 600;
+      }
+      
+      .chart-price {
+        color: #FFFFFF;
+        font-weight: 700;
+      }
     }
-  }
-
-  /* Chart container */
-  .chart-container {
-    position: relative;
-    height: 160px;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  /* Candles */
-  .candles {
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    height: 100px;
-
-    .candle {
-      width: 10px;
+    
+    .chart-container {
+      height: 200px;
+      position: relative;
+    }
+    
+    .candlestick-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
       height: 100%;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transform-origin: bottom center;
-
-      .wick {
-        width: 2px;
-        height: 20px;
-        background: linear-gradient(to bottom, transparent, #FFD700, transparent);
-        margin-bottom: -5px;
-        z-index: 2;
-      }
-
-      .flame {
-        width: 15px;
-        height: 15px;
-        background: radial-gradient(circle, #FFFFFF 0%, #FFD700 70%, transparent 100%);
-        border-radius: 50% 50% 20% 20%;
-        box-shadow: 0 0 15px #FFD700;
-        animation: flicker 0.5s infinite alternate;
-        z-index: 3;
+      
+      .candlestick {
+        flex: 1;
+        max-width: 20px;
+        position: relative;
+        margin: 0 2px;
         
-        &.gold {
-          background: radial-gradient(circle, #FFFFFF 0%, #FFA500 70%, transparent 100%);
-          box-shadow: 0 0 20px #FFA500;
+        .wick {
+          position: absolute;
+          width: 1px;
+          background: rgba(255, 255, 255, 0.7);
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        
+        .body {
+          position: absolute;
+          width: 12px;
+          border-radius: 2px;
+          left: 50%;
+          transform: translateX(-50%);
+          
+          &.bullish {
+            background: #00C853;
+          }
+          
+          &.bearish {
+            background: #FF453A;
+          }
         }
       }
     }
+    
+    .chart-footer {
+      margin-top: 0.5rem;
+      
+      .time-markers {
+        display: flex;
+        justify-content: space-between;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+      }
+    }
   }
 
-  /* Market ticker */
-  .market-ticker {
-    display: flex;
-    justify-content: space-around;
+  /* Market data grid */
+  .market-data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-
-    .ticker-item {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      min-width: 120px;
-      text-align: center;
+    width: 100%;
+    margin-bottom: 2rem;
+    z-index: 2;
+    
+    .data-card {
+      background: rgba(15, 17, 28, 0.9);
+      border-radius: 12px;
+      padding: 1rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 215, 0, 0.1);
-      flex: 1;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      z-index: 2;
-
+      
       &:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-        background: rgba(255, 215, 0, 0.1);
-        border-color: rgba(255, 215, 0, 0.3);
+        border-color: rgba(255, 215, 0, 0.4);
       }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          135deg,
-          transparent,
-          rgba(255, 215, 0, 0.03),
-          transparent
-        );
-        animation: tickerShimmer 3s infinite;
+      
+      .data-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+        color: #FFD700;
       }
-    }
-
-    .ticker-label {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-      display: block;
-      color: #FFD700;
-    }
-
-    .ticker-value {
-      font-size: 1.3rem;
-      font-weight: 700;
-      font-family: 'DIN Next', sans-serif;
-      display: block;
-      position: relative;
-      color: #FFFFFF;
-      text-shadow: 0 0 5px #FFFFFF;
+      
+      .data-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        font-family: 'DIN Next', sans-serif;
+        color: #FFFFFF;
+        margin-bottom: 0.3rem;
+      }
+      
+      .data-change {
+        font-size: 0.9rem;
+        font-weight: 600;
+        
+        &.positive {
+          color: #00C853;
+        }
+        
+        &.negative {
+          color: #FF453A;
+        }
+      }
     }
   }
 
@@ -489,8 +488,8 @@
     }
   }
 
-  /* Hacking indicators */
-  .hacking-indicators {
+  /* Trading indicators */
+  .trading-indicators {
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -498,8 +497,8 @@
     z-index: 2;
 
     .indicator {
-      width: 20px;
-      height: 20px;
+      width: 50px;
+      height: 50px;
       border: 2px solid #FFD700;
       border-radius: 50%;
       display: flex;
@@ -508,11 +507,20 @@
       box-shadow: 0 0 10px #FFD700;
 
       .indicator-inner {
-        width: 10px;
-        height: 10px;
-        background: #FFD700;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 215, 0, 0.1);
         border-radius: 50%;
-        box-shadow: 0 0 10px #FFD700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        
+        span {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #FFD700;
+        }
       }
     }
   }
@@ -548,25 +556,14 @@
   100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
-@keyframes tickerShimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
 
-@keyframes binaryFade {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes flicker {
-  0% { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.1); }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 // Media queries for responsiveness
@@ -576,30 +573,25 @@
       width: 95%;
     }
     
-    .market-ticker {
-      flex-direction: column;
+    .market-data-grid {
+      grid-template-columns: 1fr;
       gap: 0.5rem;
     }
     
-    .candle-chart {
+    .live-chart {
       padding: 1rem;
+      
+      .chart-container {
+        height: 150px;
+      }
     }
     
-    .hacking-terminal {
+    .trading-terminal {
       font-size: 12px;
     }
     
-    .candles {
-      gap: 8px;
-      
-      .candle {
-        width: 6px;
-        
-        .flame {
-          width: 10px;
-          height: 10px;
-        }
-      }
+    .logo {
+      font-size: 2rem !important;
     }
   }
 }
