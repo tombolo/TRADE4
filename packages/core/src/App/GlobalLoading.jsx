@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import './GlobalLoading.scss';
+import Logo from './path-to-your-logo/Logo'; // Update this path
 
 const GlobalLoading = () => {
     const [progress, setProgress] = useState(0);
@@ -13,14 +14,23 @@ const GlobalLoading = () => {
     });
     const [candleData, setCandleData] = useState([]);
     const containerRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
+        // Check if mobile
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
         // Generate initial candle data
         const generateCandleData = () => {
             const candles = [];
             let baseValue = 100;
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < (isMobile ? 12 : 20); i++) {
                 const volatility = 2 + Math.random() * 5;
                 const open = baseValue;
                 const close = open + (Math.random() - 0.5) * volatility;
@@ -67,14 +77,15 @@ const GlobalLoading = () => {
         return () => {
             clearInterval(progressInterval);
             clearInterval(marketInterval);
+            window.removeEventListener('resize', checkMobile);
         };
-    }, []);
+    }, [isMobile]);
 
     return (
         <div className='global-loading' ref={containerRef}>
             {/* Golden grid background */}
             <div className='golden-grid'>
-                {Array.from({ length: 100 }).map((_, i) => (
+                {Array.from({ length: isMobile ? 64 : 100 }).map((_, i) => (
                     <motion.div
                         key={i}
                         className='grid-line'
@@ -85,40 +96,43 @@ const GlobalLoading = () => {
                 ))}
             </div>
 
-            {/* Floating trading elements */}
+            {/* Floating trading elements - reduced on mobile */}
             <div className='trading-elements'>
-                {['📈', '💹', '📊', '📉', '💲', '💰', '🔍', '⚖️'].map((emoji, i) => (
-                    <motion.div
-                        key={i}
-                        className='trading-element'
-                        initial={{
-                            y: 100,
-                            opacity: 0,
-                            rotateX: -90,
-                            scale: 0.5,
-                        }}
-                        animate={{
-                            y: -100,
-                            opacity: [0, 1, 1, 0],
-                            rotateX: 0,
-                            rotateY: 360,
-                            rotateZ: 180,
-                            scale: 1,
-                        }}
-                        transition={{
-                            duration: 15,
-                            repeat: Infinity,
-                            delay: i * 0.5,
-                            ease: 'linear',
-                        }}
-                        style={{
-                            left: `${10 + i * 10}%`,
-                            color: i % 2 === 0 ? '#FFD700' : '#FFFFFF',
-                        }}
-                    >
-                        {emoji}
-                    </motion.div>
-                ))}
+                {(isMobile ? ['📈', '💹', '📊', '📉'] : ['📈', '💹', '📊', '📉', '💲', '💰', '🔍', '⚖️']).map(
+                    (emoji, i) => (
+                        <motion.div
+                            key={i}
+                            className='trading-element'
+                            initial={{
+                                y: 100,
+                                opacity: 0,
+                                rotateX: -90,
+                                scale: 0.5,
+                            }}
+                            animate={{
+                                y: -100,
+                                opacity: [0, 1, 1, 0],
+                                rotateX: 0,
+                                rotateY: isMobile ? 180 : 360,
+                                rotateZ: isMobile ? 90 : 180,
+                                scale: 1,
+                            }}
+                            transition={{
+                                duration: 15,
+                                repeat: Infinity,
+                                delay: i * 0.5,
+                                ease: 'linear',
+                            }}
+                            style={{
+                                left: `${10 + i * (isMobile ? 20 : 10)}%`,
+                                color: i % 2 === 0 ? '#FFD700' : '#FFFFFF',
+                                fontSize: isMobile ? '1.5rem' : '2rem',
+                            }}
+                        >
+                            {emoji}
+                        </motion.div>
+                    )
+                )}
             </div>
 
             {/* Animated candlestick chart background */}
@@ -134,14 +148,18 @@ const GlobalLoading = () => {
                             transition: { delay: i * 0.1, duration: 0.5 },
                         }}
                         style={{
-                            left: `${i * 5}%`,
+                            left: `${i * (isMobile ? 8 : 5)}%`,
                             height: `${candle.high - candle.low}%`,
                             top: `${candle.low}%`,
+                            width: isMobile ? '4px' : '8px',
                         }}
                     >
                         <div
                             className={`candle-body ${candle.isGrowing ? 'bullish' : 'bearish'}`}
-                            style={{ height: `${Math.abs(candle.close - candle.open)}%` }}
+                            style={{
+                                height: `${Math.abs(candle.close - candle.open)}%`,
+                                width: isMobile ? '3px' : '6px',
+                            }}
                         />
                     </motion.div>
                 ))}
@@ -177,7 +195,8 @@ const GlobalLoading = () => {
                     }}
                 >
                     <div className='logo'>
-                        TRADE<span>ALYTICS</span>
+                        {/* Using the imported logo component */}
+                        <Logo className='app-logo' />
                     </div>
                 </motion.div>
                 <motion.div
@@ -198,7 +217,7 @@ const GlobalLoading = () => {
                         key={i}
                         className={`gold-ring gold-ring-${i}`}
                         initial={{ scale: 0, opacity: 0.7 }}
-                        animate={{ scale: 2, opacity: 0 }}
+                        animate={{ scale: isMobile ? 1.5 : 2, opacity: 0 }}
                         transition={{
                             duration: 3,
                             repeat: Infinity,
@@ -299,6 +318,7 @@ const GlobalLoading = () => {
                                             style={{
                                                 height: `${Math.abs(candle.close - candle.open)}%`,
                                                 top: `${Math.min(candle.open, candle.close)}%`,
+                                                width: isMobile ? '8px' : '12px',
                                             }}
                                         />
                                     </motion.div>
@@ -372,7 +392,7 @@ const GlobalLoading = () => {
                             >
                                 <div className='progress-glow' />
                                 <div className='progress-particles'>
-                                    {Array.from({ length: 5 }).map((_, i) => (
+                                    {Array.from({ length: isMobile ? 3 : 5 }).map((_, i) => (
                                         <motion.div
                                             key={i}
                                             className='progress-particle'
@@ -399,26 +419,28 @@ const GlobalLoading = () => {
 
                     {/* Trading indicators */}
                     <div className='trading-indicators'>
-                        {['RSI', 'MACD', 'VOL', 'EMA', 'BB'].map((indicator, i) => (
-                            <motion.div
-                                key={i}
-                                className='indicator'
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{
-                                    scale: [0, 1, 1, 0],
-                                    opacity: [0, 1, 1, 0],
-                                }}
-                                transition={{
-                                    duration: 2,
-                                    repeat: Infinity,
-                                    delay: i * 0.5,
-                                }}
-                            >
-                                <div className='indicator-inner'>
-                                    <span>{indicator}</span>
-                                </div>
-                            </motion.div>
-                        ))}
+                        {(isMobile ? ['RSI', 'MACD', 'VOL'] : ['RSI', 'MACD', 'VOL', 'EMA', 'BB']).map(
+                            (indicator, i) => (
+                                <motion.div
+                                    key={i}
+                                    className='indicator'
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{
+                                        scale: [0, 1, 1, 0],
+                                        opacity: [0, 1, 1, 0],
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        delay: i * 0.5,
+                                    }}
+                                >
+                                    <div className='indicator-inner'>
+                                        <span>{indicator}</span>
+                                    </div>
+                                </motion.div>
+                            )
+                        )}
                     </div>
                 </div>
             )}
