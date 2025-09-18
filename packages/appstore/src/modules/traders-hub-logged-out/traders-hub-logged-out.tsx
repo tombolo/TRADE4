@@ -41,7 +41,7 @@ const TradersHubLoggedOut = observer(() => {
                     <GetStartedTradingBanner />
                     <Text size={isDesktop ? 'm' : 'xsm'} weight='bold' color='prominent'>
                        <a href=''>
-                           <Localize i18n_default_text="TRADE 4" />
+                           <Localize i18n_default_text="ANALYTICS PRO" />
                         </a>
                     </Text>
                     {isDesktop ? (
