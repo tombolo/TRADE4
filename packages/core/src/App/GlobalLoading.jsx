@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import './GlobalLoading.scss';
-import LOGO from './Logo/ANALYTICS.png'; // Update this path
+import Logo from './Logo/ANALYTICS.png'; // Update this path
 
 const GlobalLoading = () => {
     const [progress, setProgress] = useState(0);
