@@ -147,7 +147,7 @@ $transition: all 0.3s ease;
     margin-top: 32px;
   }
 
-  &__card {
+  &__card1 {
     background: $card-background;
     border-radius: $border-radius;
     padding: 28px;
@@ -238,7 +238,7 @@ $transition: all 0.3s ease;
 
   // Stats Grid
   &__stats {
-    &-grid {
+    &-grid1 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
