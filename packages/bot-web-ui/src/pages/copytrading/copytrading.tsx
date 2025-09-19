@@ -70,9 +70,9 @@ const CopyTradingPage: React.FC = () => {
                     <div className={styles.copytrading__logo}>
                         <div className={styles.copytrading__logo_icon}>
                             <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" />
-                                <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" />
-                                <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" />
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" />
+                                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" />
+                                <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" />
                             </svg>
                         </div>
                         <span className={styles.copytrading__logo_text}>CopyTrade Pro</span>
@@ -155,20 +155,20 @@ const CopyTradingPage: React.FC = () => {
                         </button>
 
                         <div className={styles.copytrading__stats_grid}>
-                            <div className={styles.copytrading__stat_item}>
-                                <div className={styles.copytrading__stat_icon}>📊</div>
-                                <div className={styles.copytrading__stat_value}>{copiedTrades}</div>
-                                <div className={styles.copytrading__stat_label}>Copied Trades</div>
+                            <div className={styles.copytrading__stats_item}>
+                                <div className={styles.copytrading__stats_icon}>📊</div>
+                                <div className={styles.copytrading__stats_value}>{copiedTrades}</div>
+                                <div className={styles.copytrading__stats_label}>Copied Trades</div>
                             </div>
-                            <div className={styles.copytrading__stat_item}>
-                                <div className={styles.copytrading__stat_icon}>📈</div>
-                                <div className={styles.copytrading__stat_value}>--%</div>
-                                <div className={styles.copytrading__stat_label}>Success Rate</div>
+                            <div className={styles.copytrading__stats_item}>
+                                <div className={styles.copytrading__stats_icon}>📈</div>
+                                <div className={styles.copytrading__stats_value}>--%</div>
+                                <div className={styles.copytrading__stats_label}>Success Rate</div>
                             </div>
-                            <div className={styles.copytrading__stat_item}>
-                                <div className={styles.copytrading__stat_icon}>👥</div>
-                                <div className={styles.copytrading__stat_value}>1</div>
-                                <div className={styles.copytrading__stat_label}>Active Traders</div>
+                            <div className={styles.copytrading__stats_item}>
+                                <div className={styles.copytrading__stats_icon}>👥</div>
+                                <div className={styles.copytrading__stats_value}>1</div>
+                                <div className={styles.copytrading__stats_label}>Active Traders</div>
                             </div>
                         </div>
                     </div>
@@ -180,45 +180,41 @@ const CopyTradingPage: React.FC = () => {
                             Account Information
                         </h3>
 
-                        <div className={styles.copytrading__details}>
-                            <div style={{ marginBottom: '20px' }}>
-                                <Text size="xs" color="less-prominent" className={styles.copytrading__label}>
+                        <div className={styles.copytrading__account_details}>
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
                                     Login ID
-                                </Text>
-                                <Text size="s" weight="bold" className={styles.copytrading__balance}>
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
                                     {loginid || '---'}
-                                </Text>
+                                </div>
                             </div>
 
-                            <div style={{ marginBottom: '20px' }}>
-                                <Text size="xs" color="less-prominent" className={styles.copytrading__label}>
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
                                     Balance
-                                </Text>
-                                <Text size="s" weight="bold" className={styles.copytrading__balance}>
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
                                     {currency ? `${balance} ${getCurrencyDisplayCode(currency)}` : '---'}
-                                </Text>
+                                </div>
                             </div>
 
-                            <div style={{ marginBottom: '20px' }}>
-                                <Text size="xs" color="less-prominent" className={styles.copytrading__label}>
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
                                     Account Type
-                                </Text>
-                                <Text size="s" weight="bold">
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
                                     <DisplayAccountType account_type={accountType} is_eu={false} />
-                                </Text>
+                                </div>
                             </div>
 
-                            <div>
-                                <Text size="xs" color="less-prominent" className={styles.copytrading__label}>
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
                                     Status
-                                </Text>
-                                <Text
-                                    size="s"
-                                    weight="bold"
-                                    color={isCopyTrading ? 'profit-success' : 'less-prominent'}
-                                >
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
                                     {isCopyTrading ? 'Active ✅' : 'Inactive'}
-                                </Text>
+                                </div>
                             </div>
                         </div>
                     </div>
