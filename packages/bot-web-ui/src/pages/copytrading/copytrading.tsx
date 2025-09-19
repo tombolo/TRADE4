@@ -126,7 +126,7 @@ const CopyTradingPage: React.FC = () => {
                 {/* Main Content */}
                 <main className={styles.copytrading__main}>
                     {/* Trading Controls Card */}
-                    <div className={styles.copytrading__card}>
+                    <div className={classNames(styles.copytrading__card, styles.copytrading__card_controls)}>
                         <h3 className={styles.copytrading__card_title}>
                             <span>📈</span>
                             Copy Trading Controls
@@ -174,7 +174,7 @@ const CopyTradingPage: React.FC = () => {
                     </div>
 
                     {/* Account Info Card */}
-                    <div className={styles.copytrading__card}>
+                    <div className={classNames(styles.copytrading__card, styles.copytrading__card_account)}>
                         <h3 className={styles.copytrading__card_title}>
                             <span>👤</span>
                             Account Information

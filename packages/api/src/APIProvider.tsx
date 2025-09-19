@@ -142,6 +142,25 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
     const subscriptions = useRef<Record<string, DerivAPIBasic['subscribe']>>();
     const isBrowser = typeof window !== 'undefined';
 
+    // Initialize tokens storage
+    useEffect(() => {
+        if (!isBrowser) return;
+
+        if (!localStorage.getItem('tokens')) {
+            localStorage.setItem('tokens', JSON.stringify({}));
+        }
+
+        // Store current token for active loginid
+        const currentToken = localStorage.getItem('activeToken');
+        const currentLoginid = localStorage.getItem('active_loginid');
+
+        if (currentToken && currentLoginid) {
+            const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
+            tokens[currentLoginid] = currentToken;
+            localStorage.setItem('tokens', JSON.stringify(tokens));
+        }
+    }, [isBrowser]);
+
     /** Detect loginid changes */
     useEffect(() => {
         if (!isBrowser) return;
@@ -216,8 +235,28 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
         (loginid: string | null | undefined) => {
             if (!standalone) return;
             const newEnv = getEnvironment(loginid);
+
             if (newEnv !== 'custom' && newEnv !== environment) {
+                // Preserve the token before switching
+                const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
+                const currentToken = localStorage.getItem('activeToken');
+                const currentLoginid = localStorage.getItem('active_loginid');
+
+                if (currentToken && currentLoginid) {
+                    tokens[currentLoginid] = currentToken;
+                    localStorage.setItem('tokens', JSON.stringify(tokens));
+                }
+
+                // Set new loginid and environment
+                if (loginid) {
+                    localStorage.setItem('active_loginid', loginid);
+                    setActiveLoginid(loginid);
+                }
+
                 setEnvironment(newEnv);
+
+                // Force reconnection to apply new environment
+                setReconnect(true);
             }
         },
         [environment, standalone]
@@ -235,56 +274,77 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
     /** Reinit API when env/loginid changes */
     useEffect(() => {
         let timer: NodeJS.Timeout;
+
         if (standalone || reconnect) {
+            console.log('Reinitializing API for environment:', environment, 'loginid:', activeLoginid);
+
             standaloneDerivAPI.current = initializeDerivAPI(() => {
-                timer = setTimeout(() => setReconnect(true), 500);
+                timer = setTimeout(() => setReconnect(true), 1000);
             });
+
             setReconnect(false);
+
+            // Reauthorize after reconnection
+            if (standaloneDerivAPI.current) {
+                const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
+                const token = tokens[activeLoginid || ''];
+
+                if (token) {
+                    setTimeout(() => {
+                        standaloneDerivAPI.current?.send({ authorize: token });
+                        localStorage.setItem('activeToken', token);
+                    }, 100);
+                }
+            }
         }
+
         return () => clearTimeout(timer);
     }, [environment, reconnect, standalone, activeLoginid]);
 
-    /** Core: listen to WS messages */
+    /** Core: listen to WS messages and handle authentication */
     useEffect(() => {
         if (typeof window === 'undefined') return;
         const api = getActiveDerivAPI();
         if (!api || !api.connection) return;
 
         const ws_conn: WebSocket = api.connection;
-        const handler = (evt: MessageEvent) => {
+
+        const messageHandler = (evt: MessageEvent) => {
             try {
                 const data = JSON.parse(evt.data);
 
-                /** Authorize */
+                // Handle authorize response
                 if (data.msg_type === 'authorize' && data.authorize) {
                     const auth = data.authorize;
                     localStorage.setItem('active_loginid', auth.loginid);
                     localStorage.setItem('currency', auth.currency || '');
                     localStorage.setItem('is_virtual', String(!!auth.is_virtual));
 
-                    // ✅ store fullname
                     if (auth.fullname) localStorage.setItem('name', auth.fullname);
 
-                    // ✅ re-save token mapping
+                    // Store token for this specific loginid
                     const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
-                    if (tokens[auth.loginid]) {
-                        localStorage.setItem('activeToken', tokens[auth.loginid]);
+                    const currentToken = localStorage.getItem('activeToken');
+                    if (currentToken) {
+                        tokens[auth.loginid] = currentToken;
+                        localStorage.setItem('tokens', JSON.stringify(tokens));
                     }
                 }
 
-                /** Balance */
+                // Handle balance updates
                 if (data.msg_type === 'balance' && data.balance) {
                     localStorage.setItem('balance', String(data.balance.balance));
-                    localStorage.setItem('currency', data.balance.currency);
+                    if (data.balance.currency) {
+                        localStorage.setItem('currency', data.balance.currency);
+                    }
                 }
 
-                /** Account List */
+                // Handle account list
                 if (data.msg_type === 'account_list' && Array.isArray(data.account_list)) {
                     localStorage.setItem('account_list', JSON.stringify(data.account_list));
+
                     const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
-                    const activeAcc =
-                        data.account_list.find((a: any) => a.loginid === activeLoginid) ||
-                        data.account_list[0];
+                    const activeAcc = data.account_list.find((a: any) => a.loginid === activeLoginid) || data.account_list[0];
 
                     if (activeAcc) {
                         localStorage.setItem('active_loginid', activeAcc.loginid);
@@ -292,38 +352,53 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
                         localStorage.setItem('currency', activeAcc.currency || '');
                         localStorage.setItem('is_virtual', String(!!activeAcc.is_virtual));
 
-                        // ✅ reauthorize with correct token
+                        // Get token for this specific account
                         const token = tokens[activeAcc.loginid];
                         if (token) {
-                            send('authorize', { authorize: token } as any);
                             localStorage.setItem('activeToken', token);
+                            // Reauthorize with the correct token
+                            send('authorize', { authorize: token } as any);
                         }
                     }
                 }
-            } catch {
-                /* ignore non-JSON */
+            } catch (error) {
+                // Ignore non-JSON messages or parse errors
+                console.debug('Message parse error:', error);
             }
         };
 
-        ws_conn.addEventListener('message', handler);
-
-        (async () => {
-            const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
-            const token = tokens[activeLoginid || ''];
-            if (token) {
-                await send('authorize', { authorize: token } as any);
-                localStorage.setItem('activeToken', token);
-            }
+        const reauthorizeConnection = async () => {
             try {
+                const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
+                const token = tokens[activeLoginid || ''];
+
+                if (token) {
+                    await send('authorize', { authorize: token } as any);
+                    localStorage.setItem('activeToken', token);
+                }
+
+                // Refresh account data
                 await send('account_list' as any);
                 await subscribe('balance' as any, {} as any);
-            } catch { }
-        })();
+            } catch (error) {
+                console.debug('Reauthorization error:', error);
+            }
+        };
+
+        ws_conn.addEventListener('message', messageHandler);
+
+        // Reauthorize when connection opens or when activeLoginid changes
+        if (ws_conn.readyState === WebSocket.OPEN) {
+            reauthorizeConnection();
+        } else {
+            ws_conn.addEventListener('open', reauthorizeConnection);
+        }
 
         return () => {
-            ws_conn.removeEventListener('message', handler);
+            ws_conn.removeEventListener('message', messageHandler);
+            ws_conn.removeEventListener('open', reauthorizeConnection);
         };
-    }, [WS, environment, reconnect, activeLoginid, standalone]);
+    }, [WS, environment, reconnect, activeLoginid, standalone, send, subscribe]);
 
     return (
         <APIContext.Provider

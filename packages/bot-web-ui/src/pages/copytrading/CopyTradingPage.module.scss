@@ -147,16 +147,27 @@ $transition: all 0.3s ease;
     margin-top: 32px;
   }
 
-  &__card1 {
+  // Card Styles
+  &__card {
     background: $card-background;
     border-radius: $border-radius;
     padding: 28px;
     border: 1px solid rgba($text-primary, 0.1);
     transition: $transition;
+    animation: fadeInUp 0.6s ease-out;
 
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    // Specific card variations
+    &--controls {
+      // Additional styles for controls card if needed
+    }
+
+    &--account {
+      // Additional styles for account card if needed
     }
   }
 
@@ -238,11 +249,12 @@ $transition: all 0.3s ease;
 
   // Stats Grid
   &__stats {
-    &-grid1 {
+    &-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-top: 20px;
+      animation: fadeInUp 0.8s ease-out;
     }
 
     &-item {
@@ -337,7 +349,7 @@ $transition: all 0.3s ease;
   }
 }
 
-// Animations (outside the main block to avoid duplication)
+// Animations
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -347,13 +359,4 @@ $transition: all 0.3s ease;
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-// Apply animations to cards and stats grid
-.copytrading__card {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.copytrading__stats-grid {
-  animation: fadeInUp 0.8s ease-out;
 }
