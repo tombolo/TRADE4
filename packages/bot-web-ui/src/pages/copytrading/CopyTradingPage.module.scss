@@ -1,6 +1,4 @@
-@import '@deriv/components/lib/styles/index.scss';
-
-// Variables
+// Variables - Using Deriv's color scheme
 $primary-color: #FF444F;
 $primary-gradient: linear-gradient(135deg, #FF444F 0%, #FF644F 100%);
 $secondary-color: #2A3052;
@@ -337,24 +335,25 @@ $transition: all 0.3s ease;
       min-width: auto;
     }
   }
+}
 
-  // Animations
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+// Animations (outside the main block to avoid duplication)
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  &__card {
-    animation: fadeInUp 0.6s ease-out;
-  }
+// Apply animations to cards and stats grid
+.copytrading__card {
+  animation: fadeInUp 0.6s ease-out;
+}
 
-  &__stats-grid {
-    animation: fadeInUp 0.8s ease-out;
-  }
+.copytrading__stats-grid {
+  animation: fadeInUp 0.8s ease-out;
 }
