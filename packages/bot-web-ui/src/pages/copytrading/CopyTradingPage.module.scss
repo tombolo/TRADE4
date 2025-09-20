@@ -21,7 +21,8 @@ $shadow-hover: 0 16px 48px rgba(255, 68, 79, 0.25);
 .copytrading {
   &__wrapper {
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    position: relative;
     background: linear-gradient(135deg, #0E0E23 0%, #1A1A2E 100%);
     padding: 32px;
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
