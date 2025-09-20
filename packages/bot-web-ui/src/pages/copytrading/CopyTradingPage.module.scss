@@ -1,8 +1,6 @@
 .copytrading {
     &__wrapper {
-        width: 100%;
-        height: 100vh;
-        position: relative;
+        min-height: 100vh;
         background: linear-gradient(135deg, #0d1424 0%, #1e2a45 100%);
         padding: 20px;
         font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -39,7 +37,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #fff;
             svg {
                 width: 24px;
                 height: 24px;
@@ -131,7 +129,6 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #ff444f, #ff6447, #ff9447);
         }
 
         &:hover {
@@ -143,6 +140,9 @@
             &:before {
                 background: linear-gradient(90deg, #ff444f, #ff6447, #ff9447);
             }
+
+            // Animation for the controls card
+            animation: glow 3s ease-in-out infinite;
         }
 
         &_account {
@@ -222,7 +222,7 @@
 
         &_active {
             background: linear-gradient(135deg, #ff444f 0%, #ff6447 100%);
-            color: white;
+            color: #fff;
             
             &:hover:not(:disabled) {
                 transform: translateY(-2px);
@@ -232,7 +232,7 @@
 
         &_inactive {
             background: linear-gradient(135deg, #4f6afa 0%, #6b8aff 100%);
-            color: white;
+            color: #fff;
             
             &:hover:not(:disabled) {
                 transform: translateY(-2px);
@@ -342,8 +342,4 @@
     100% {
         box-shadow: 0 0 5px rgba(255, 100, 71, 0.3);
     }
-}
-
-.copytrading__card_controls {
-    animation: glow 3s ease-in-out infinite;
 }
