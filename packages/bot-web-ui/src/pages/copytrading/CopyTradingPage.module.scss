@@ -1,24 +1,31 @@
-// Variables - Using Deriv's color scheme
+// Enhanced Variables - Improved contrast and sizing
 $primary-color: #FF444F;
 $primary-gradient: linear-gradient(135deg, #FF444F 0%, #FF644F 100%);
+$primary-hover: #FF6B75;
 $secondary-color: #2A3052;
 $background-color: #0E0E23;
 $card-background: #1E1E3F;
+$card-hover: #2A2A4A;
 $text-primary: #FFFFFF;
-$text-secondary: #A0A0C0;
+$text-secondary: #D0D0E0;
+$text-accent: #FF9BA3;
 $success-color: #4CAF50;
+$warning-color: #FF9800;
 $error-color: #FF444F;
-$border-radius: 16px;
-$transition: all 0.3s ease;
+$border-radius: 20px;
+$border-radius-sm: 12px;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+$shadow-hover: 0 16px 48px rgba(255, 68, 79, 0.25);
 
 .copytrading {
   &__wrapper {
     width: 100%;
-    height: 100vh;
-    position: relative;
-    background: $background-color;
-    padding: 24px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0E0E23 0%, #1A1A2E 100%);
+    padding: 32px;
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: $text-primary;
   }
 
   &__container {
@@ -31,42 +38,45 @@ $transition: all 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    padding: 20px;
-    background: rgba(42, 48, 82, 0.6);
-    backdrop-filter: blur(10px);
+    margin-bottom: 40px;
+    padding: 24px 32px;
+    background: rgba(42, 48, 82, 0.8);
+    backdrop-filter: blur(20px);
     border-radius: $border-radius;
-    border: 1px solid rgba($text-primary, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: $shadow;
   }
 
   &__logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     
     &-icon {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       background: $primary-gradient;
-      border-radius: 12px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 16px rgba(255, 68, 79, 0.3);
       
       svg {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         fill: $text-primary;
       }
     }
 
     &-text {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, $text-primary 0%, $text-secondary 100%);
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, $text-primary 0%, $text-accent 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.5px;
     }
   }
 
@@ -74,19 +84,21 @@ $transition: all 0.3s ease;
   &__acc-info {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 20px;
+    gap: 20px;
+    padding: 24px;
     background: $card-background;
     border-radius: $border-radius;
-    border: 1px solid rgba($text-primary, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     transition: $transition;
     cursor: pointer;
-    min-width: 280px;
+    min-width: 320px;
+    box-shadow: $shadow;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(255, 68, 79, 0.15);
-      border-color: rgba(255, 68, 79, 0.3);
+      transform: translateY(-4px);
+      box-shadow: $shadow-hover;
+      border-color: rgba(255, 68, 79, 0.4);
+      background: $card-hover;
     }
   }
 
@@ -100,44 +112,48 @@ $transition: all 0.3s ease;
   }
 
   &__balance {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: $text-primary;
-    margin: 0 0 4px 0;
+    margin: 0 0 6px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 
     &--no-currency {
       color: $text-secondary;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 18px;
     }
   }
 
   &__account-type {
-    font-size: 12px;
-    color: $text-secondary;
-    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: $text-accent;
+    margin: 0 0 6px 0;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
 
   &__loginid {
-    font-size: 11px;
+    font-size: 13px;
     color: $text-secondary;
     margin: 0;
     font-family: 'IBM Plex Mono', monospace;
     letter-spacing: 0.5px;
+    font-weight: 500;
   }
 
   &__select-arrow {
     color: $text-secondary;
     transition: $transition;
+    font-size: 18px;
     
     .copytrading__acc-info:hover & {
       color: $primary-color;
-      transform: translateX(2px);
+      transform: translateX(4px);
     }
   }
 
@@ -145,100 +161,116 @@ $transition: all 0.3s ease;
   &__main {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 32px;
+    gap: 32px;
+    margin-top: 40px;
   }
 
   // Card Styles
   &__card {
     background: $card-background;
     border-radius: $border-radius;
-    padding: 28px;
-    border: 1px solid rgba($text-primary, 0.1);
+    padding: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     transition: $transition;
     animation: fadeInUp 0.6s ease-out;
+    box-shadow: $shadow;
+    backdrop-filter: blur(10px);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    // Specific card variations
-    &--controls {
-      // Additional styles for controls card if needed
-    }
-
-    &--account {
-      // Additional styles for account card if needed
+      transform: translateY(-4px);
+      box-shadow: $shadow-hover;
+      border-color: rgba(255, 68, 79, 0.3);
+      background: $card-hover;
     }
   }
 
   &__card-title {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: $text-primary;
-    margin: 0 0 20px 0;
+    margin: 0 0 28px 0;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+    span {
+      font-size: 28px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
   }
 
   // Trading Controls
   &__input-group {
-    margin-bottom: 24px;
+    margin-bottom: 32px;
   }
 
   &__label {
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     color: $text-secondary;
-    margin-bottom: 8px;
-    font-weight: 500;
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
   }
 
   &__input {
     width: 100%;
-    padding: 16px;
-    background: rgba($text-primary, 0.05);
-    border: 2px solid rgba($text-primary, 0.1);
-    border-radius: 12px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: $border-radius-sm;
     color: $text-primary;
-    font-size: 14px;
+    font-size: 16px;
     transition: $transition;
     font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
 
     &:focus {
       outline: none;
       border-color: $primary-color;
-      background: rgba(255, 68, 79, 0.05);
+      background: rgba(255, 68, 79, 0.1);
+      box-shadow: 0 0 0 4px rgba(255, 68, 79, 0.15);
+      transform: translateY(-2px);
     }
 
     &::placeholder {
-      color: rgba($text-secondary, 0.6);
+      color: rgba($text-secondary, 0.7);
+      font-weight: 400;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 
   &__button {
     width: 100%;
-    padding: 18px;
+    padding: 22px;
     background: $primary-gradient;
     border: none;
-    border-radius: 12px;
+    border-radius: $border-radius-sm;
     color: $text-primary;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     cursor: pointer;
     transition: $transition;
     position: relative;
     overflow: hidden;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 16px rgba(255, 68, 79, 0.3);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 68, 79, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(255, 68, 79, 0.4);
+      background: linear-gradient(135deg, $primary-hover 0%, #FF7A5F 100%);
     }
 
     &:active {
-      transform: translateY(0);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(255, 68, 79, 0.3);
     }
 
     &:disabled {
@@ -246,6 +278,11 @@ $transition: all 0.3s ease;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      
+      &:hover {
+        background: rgba($text-secondary, 0.3);
+        transform: none;
+      }
     }
   }
 
@@ -254,41 +291,45 @@ $transition: all 0.3s ease;
     &-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 20px;
+      gap: 20px;
+      margin-top: 28px;
       animation: fadeInUp 0.8s ease-out;
     }
 
     &-item {
       text-align: center;
-      padding: 20px;
-      background: rgba($text-primary, 0.05);
-      border-radius: 12px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: $border-radius-sm;
       transition: $transition;
+      border: 1px solid rgba(255, 255, 255, 0.1);
 
       &:hover {
-        background: rgba($text-primary, 0.1);
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       }
     }
 
     &-icon {
-      font-size: 24px;
-      margin-bottom: 8px;
+      font-size: 32px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
 
     &-value {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 28px;
+      font-weight: 800;
       color: $text-primary;
-      margin: 0 0 4px 0;
+      margin: 0 0 6px 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     &-label {
-      font-size: 12px;
+      font-size: 14px;
       color: $text-secondary;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       font-weight: 600;
     }
   }
@@ -298,12 +339,12 @@ $transition: all 0.3s ease;
     &-details {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     &-info {
       &-item {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         
         &:last-child {
           margin-bottom: 0;
@@ -311,54 +352,147 @@ $transition: all 0.3s ease;
       }
       
       &-label {
-        font-size: 12px;
+        font-size: 14px;
         color: $text-secondary;
-        margin-bottom: 4px;
-        font-weight: 500;
+        margin-bottom: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
       }
       
       &-value {
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 700;
         color: $text-primary;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        
+        &.status-active {
+          color: $success-color;
+        }
+        
+        &.status-inactive {
+          color: $text-secondary;
+        }
       }
     }
   }
 
   // Responsive Design
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     &__wrapper {
-      padding: 16px;
+      padding: 24px;
     }
 
     &__header {
+      padding: 20px;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
       text-align: center;
     }
 
     &__main {
       grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    &__stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__acc-info {
+      min-width: auto;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    &__wrapper {
+      padding: 16px;
+    }
+
+    &__header {
+      padding: 16px;
+    }
+
+    &__card {
+      padding: 24px;
     }
 
     &__stats-grid {
       grid-template-columns: 1fr;
     }
 
-    &__acc-info {
-      min-width: auto;
+    &__logo {
+      &-text {
+        font-size: 24px;
+      }
+      
+      &-icon {
+        width: 40px;
+        height: 40px;
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+
+    &__balance {
+      font-size: 20px;
+    }
+
+    &__card-title {
+      font-size: 20px;
+      
+      span {
+        font-size: 24px;
+      }
+    }
+
+    &__button {
+      padding: 20px;
+      font-size: 16px;
     }
   }
 }
 
-// Animations
+// Enhanced Animations
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Additional utility classes
+.status-active {
+  color: $success-color !important;
+  font-weight: 700 !important;
+}
+
+.status-inactive {
+  color: $text-secondary !important;
+  font-weight: 600 !important;
+}
+
+// Loading animation for stats
+.loading-pulse {
+  animation: pulse 2s infinite;
 }
