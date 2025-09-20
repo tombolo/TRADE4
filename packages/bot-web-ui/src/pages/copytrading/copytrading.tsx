@@ -17,19 +17,46 @@ const CopyTradingPage: React.FC = () => {
     const [traderToken, setTraderToken] = useState<string>('');
     const [isCopyTrading, setIsCopyTrading] = useState<boolean>(false);
     const [copiedTrades, setCopiedTrades] = useState<number>(0);
+    const [accountName, setAccountName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [token, setToken] = useState<string>('');
 
     const { isDesktop } = useDevice();
 
     const loadAccountData = () => {
-        const stored_balance = localStorage.getItem('balance');
-        const stored_currency = localStorage.getItem('currency');
-        const stored_loginid = localStorage.getItem('active_loginid');
-        const stored_type = localStorage.getItem('account_type');
+        // Get data from the new account_info object in localStorage
+        const accountInfoStr = localStorage.getItem('account_info');
 
-        if (stored_balance) setBalance(parseFloat(stored_balance).toFixed(2));
-        if (stored_currency) setCurrency(stored_currency);
-        if (stored_loginid) setLoginid(stored_loginid);
-        if (stored_type) setAccountType(stored_type);
+        if (accountInfoStr) {
+            try {
+                const accountInfo = JSON.parse(accountInfoStr);
+
+                if (accountInfo.balance) setBalance(parseFloat(accountInfo.balance).toFixed(2));
+                if (accountInfo.loginid) setLoginid(accountInfo.loginid);
+                if (accountInfo.account_type) setAccountType(accountInfo.account_type);
+                if (accountInfo.name) setAccountName(accountInfo.name);
+                if (accountInfo.email) setEmail(accountInfo.email);
+                if (accountInfo.token) setToken(accountInfo.token);
+
+                // For currency, we might need to get it from another source
+                // or modify the API to include it in account_info
+                const stored_currency = localStorage.getItem('currency');
+                if (stored_currency) setCurrency(stored_currency);
+            } catch (error) {
+                console.error('Error parsing account info:', error);
+            }
+        } else {
+            // Fallback to old storage method if new method not available
+            const stored_balance = localStorage.getItem('balance');
+            const stored_currency = localStorage.getItem('currency');
+            const stored_loginid = localStorage.getItem('active_loginid');
+            const stored_type = localStorage.getItem('account_type');
+
+            if (stored_balance) setBalance(parseFloat(stored_balance).toFixed(2));
+            if (stored_currency) setCurrency(stored_currency);
+            if (stored_loginid) setLoginid(stored_loginid);
+            if (stored_type) setAccountType(stored_type);
+        }
     };
 
     useEffect(() => {
@@ -128,7 +155,7 @@ const CopyTradingPage: React.FC = () => {
                     {/* Trading Controls Card */}
                     <div className={classNames(styles.copytrading__card, styles.copytrading__card_controls)}>
                         <h3 className={styles.copytrading__card_title}>
-                            <span>📈</span>
+                            <span className={styles.copytrading__card_icon}>📈</span>
                             Copy Trading Controls
                         </h3>
 
@@ -147,11 +174,17 @@ const CopyTradingPage: React.FC = () => {
                         </div>
 
                         <button
-                            className={styles.copytrading__button}
+                            className={classNames(styles.copytrading__button, {
+                                [styles.copytrading__button_active]: isCopyTrading,
+                                [styles.copytrading__button_inactive]: !isCopyTrading,
+                            })}
                             onClick={isCopyTrading ? handleStopCopyTrading : handleStartCopyTrading}
                             disabled={!traderToken.trim() || (traderToken.trim().length < 15 && !isCopyTrading)}
                         >
-                            {isCopyTrading ? '🛑 Stop Copy Trading' : '🚀 Start Copy Trading'}
+                            <span className={styles.copytrading__button_icon}>
+                                {isCopyTrading ? '🛑' : '🚀'}
+                            </span>
+                            {isCopyTrading ? 'Stop Copy Trading' : 'Start Copy Trading'}
                         </button>
 
                         <div className={styles.copytrading__stats_grid}>
@@ -176,11 +209,29 @@ const CopyTradingPage: React.FC = () => {
                     {/* Account Info Card */}
                     <div className={classNames(styles.copytrading__card, styles.copytrading__card_account)}>
                         <h3 className={styles.copytrading__card_title}>
-                            <span>👤</span>
+                            <span className={styles.copytrading__card_icon}>👤</span>
                             Account Information
                         </h3>
 
                         <div className={styles.copytrading__account_details}>
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
+                                    Name
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
+                                    {accountName || '---'}
+                                </div>
+                            </div>
+
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
+                                    Email
+                                </div>
+                                <div className={styles.copytrading__account_info_value}>
+                                    {email || '---'}
+                                </div>
+                            </div>
+
                             <div className={styles.copytrading__account_info_item}>
                                 <div className={styles.copytrading__account_info_label}>
                                     Login ID
@@ -210,9 +261,21 @@ const CopyTradingPage: React.FC = () => {
 
                             <div className={styles.copytrading__account_info_item}>
                                 <div className={styles.copytrading__account_info_label}>
-                                    Status
+                                    Token
                                 </div>
                                 <div className={styles.copytrading__account_info_value}>
+                                    {token ? `${token.substring(0, 8)}...` : '---'}
+                                </div>
+                            </div>
+
+                            <div className={styles.copytrading__account_info_item}>
+                                <div className={styles.copytrading__account_info_label}>
+                                    Status
+                                </div>
+                                <div className={classNames(styles.copytrading__account_info_value, {
+                                    [styles.copytrading__status_active]: isCopyTrading,
+                                    [styles.copytrading__status_inactive]: !isCopyTrading,
+                                })}>
                                     {isCopyTrading ? 'Active ✅' : 'Inactive'}
                                 </div>
                             </div>
