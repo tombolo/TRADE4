@@ -1,6 +1,8 @@
 .copytrading {
     &__wrapper {
-        min-height: 100vh;
+        width: 100%;
+        height: 100vh;
+        position: relative;
         background: linear-gradient(135deg, #0d1424 0%, #1e2a45 100%);
         padding: 20px;
         font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
