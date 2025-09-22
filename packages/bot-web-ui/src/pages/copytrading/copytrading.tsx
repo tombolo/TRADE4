@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import styles from "@/styles/CopyTradingPage.module.scss";
+import styles from "./CopyTradingPage.module.scss";
 import { getAuthToken } from "@deriv/shared";
 
 const APP_ID = 70344; // replace with your own App ID from Deriv
