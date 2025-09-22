@@ -169,7 +169,13 @@
         gap: 10px;
     }
 
-    &__refresh_button {
+    &__button_group {
+        display: flex;
+        gap: 8px;
+    }
+
+    &__refresh_button,
+    &__fetch_button {
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 8px;
@@ -182,12 +188,20 @@
         &:hover {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.3);
-            transform: rotate(180deg);
         }
 
         &:active {
-            transform: rotate(180deg) scale(0.95);
+            transform: scale(0.95);
         }
+    }
+
+    &__refresh_button:hover {
+        transform: rotate(180deg);
+    }
+
+    &__fetch_button:hover {
+        background: rgba(76, 175, 80, 0.3);
+        border-color: rgba(76, 175, 80, 0.5);
     }
 
     &__card_icon {

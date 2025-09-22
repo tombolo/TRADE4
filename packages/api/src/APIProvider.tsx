@@ -252,10 +252,14 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
 
     useEffect(() => {
         console.log('[APIProvider] Mount: activeLoginid:', activeLoginid, 'environment:', environment);
+        console.log('[APIProvider] standalone:', standalone, 'standaloneDerivAPI.current:', !!standaloneDerivAPI.current);
 
         // Fetch account information on initial mount if standalone
         if (standalone && standaloneDerivAPI.current) {
+            console.log('[APIProvider] Calling fetchAndStoreAccountInfo on mount');
             fetchAndStoreAccountInfo(send);
+        } else {
+            console.log('[APIProvider] Not calling fetchAndStoreAccountInfo - standalone:', standalone, 'API available:', !!standaloneDerivAPI.current);
         }
     }, []);
 
@@ -265,7 +269,16 @@ const APIProvider = ({ children, standalone = false }: PropsWithChildren<TAPIPro
 
     const send: TSendFunction = (name, payload) => {
         console.log('[APIProvider] send:', name, payload);
-        return standaloneDerivAPI.current?.send({ [name]: 1, ...payload });
+        console.log('[APIProvider] standaloneDerivAPI.current:', !!standaloneDerivAPI.current);
+        
+        if (!standaloneDerivAPI.current) {
+            console.error('[APIProvider] standaloneDerivAPI.current is null!');
+            return Promise.reject(new Error('API not initialized'));
+        }
+        
+        const result = standaloneDerivAPI.current.send({ [name]: 1, ...payload });
+        console.log('[APIProvider] send result:', result);
+        return result;
     };
 
     const subscribe: TSubscribeFunction = async (name, payload) => {
