@@ -169,7 +169,7 @@ const CopyTradingPage: React.FC = () => {
             <header className={styles.header}>
                 <div className={styles.brand}>
                     <div className={styles.logo}>
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <svg width="33" height="33" viewBox="0 0 32 32" fill="none">
                             <circle cx="16" cy="16" r="16" fill="#D4AF37" />
                             <path d="M16 7L19.468 13.432L26.5 14.836L21.5 20.024L22.936 27.064L16 23.872L9.064 27.064L10.5 20.024L5.5 14.836L12.532 13.432L16 7Z" fill="white" />
                         </svg>
