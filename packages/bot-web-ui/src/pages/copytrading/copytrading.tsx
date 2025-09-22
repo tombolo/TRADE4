@@ -24,33 +24,59 @@ const CopyTradingPage: React.FC = () => {
     const { isDesktop } = useDevice();
 
     const loadAccountData = () => {
+        console.log('[CopyTrading] Loading account data...');
+        
         // Get data from the new account_info object in localStorage
         const accountInfoStr = localStorage.getItem('account_info');
+        console.log('[CopyTrading] Raw account_info from localStorage:', accountInfoStr);
 
         if (accountInfoStr) {
             try {
                 const accountInfo = JSON.parse(accountInfoStr);
+                console.log('[CopyTrading] Parsed account info:', accountInfo);
 
-                if (accountInfo.balance) setBalance(parseFloat(accountInfo.balance).toFixed(2));
-                if (accountInfo.loginid) setLoginid(accountInfo.loginid);
-                if (accountInfo.account_type) setAccountType(accountInfo.account_type);
-                if (accountInfo.name) setAccountName(accountInfo.name);
-                if (accountInfo.email) setEmail(accountInfo.email);
-                if (accountInfo.token) setToken(accountInfo.token);
+                // Set all the account information
+                if (accountInfo.balance !== undefined) {
+                    setBalance(parseFloat(accountInfo.balance).toFixed(2));
+                }
+                if (accountInfo.loginid) {
+                    setLoginid(accountInfo.loginid);
+                }
+                if (accountInfo.account_type) {
+                    setAccountType(accountInfo.account_type);
+                }
+                if (accountInfo.name) {
+                    setAccountName(accountInfo.name);
+                }
+                if (accountInfo.email) {
+                    setEmail(accountInfo.email);
+                }
+                if (accountInfo.token) {
+                    setToken(accountInfo.token);
+                }
+                if (accountInfo.currency) {
+                    setCurrency(accountInfo.currency);
+                }
 
-                // For currency, we might need to get it from another source
-                // or modify the API to include it in account_info
-                const stored_currency = localStorage.getItem('currency');
-                if (stored_currency) setCurrency(stored_currency);
+                console.log('[CopyTrading] Account data loaded successfully');
             } catch (error) {
-                console.error('Error parsing account info:', error);
+                console.error('[CopyTrading] Error parsing account info:', error);
             }
         } else {
+            console.log('[CopyTrading] No account_info found, using fallback method');
+            
             // Fallback to old storage method if new method not available
             const stored_balance = localStorage.getItem('balance');
             const stored_currency = localStorage.getItem('currency');
             const stored_loginid = localStorage.getItem('active_loginid');
             const stored_type = localStorage.getItem('account_type');
+
+            console.log('[CopyTrading] Fallback data:', {
+                balance: stored_balance,
+                currency: stored_currency,
+                loginid: stored_loginid,
+                type: stored_type
+            });
 
             if (stored_balance) setBalance(parseFloat(stored_balance).toFixed(2));
             if (stored_currency) setCurrency(stored_currency);
@@ -66,10 +92,17 @@ const CopyTradingPage: React.FC = () => {
             loadAccountData();
         };
 
+        // Listen for storage changes
         window.addEventListener('storage', handleStorageChange);
+
+        // Also refresh data periodically to catch updates
+        const refreshInterval = setInterval(() => {
+            loadAccountData();
+        }, 2000);
 
         return () => {
             window.removeEventListener('storage', handleStorageChange);
+            clearInterval(refreshInterval);
         };
     }, []);
 
@@ -87,6 +120,17 @@ const CopyTradingPage: React.FC = () => {
 
     const handleStopCopyTrading = () => {
         setIsCopyTrading(false);
+    };
+
+    const handleRefreshAccountData = () => {
+        console.log('[CopyTrading] Manual refresh triggered');
+        loadAccountData();
+        
+        // Also trigger a storage event to simulate data update
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'account_info',
+            newValue: localStorage.getItem('account_info')
+        }));
     };
 
     return (
@@ -208,10 +252,19 @@ const CopyTradingPage: React.FC = () => {
 
                     {/* Account Info Card */}
                     <div className={classNames(styles.copytrading__card, styles.copytrading__card_account)}>
-                        <h3 className={styles.copytrading__card_title}>
-                            <span className={styles.copytrading__card_icon}>👤</span>
-                            Account Information
-                        </h3>
+                        <div className={styles.copytrading__card_header}>
+                            <h3 className={styles.copytrading__card_title}>
+                                <span className={styles.copytrading__card_icon}>👤</span>
+                                Account Information
+                            </h3>
+                            <button 
+                                className={styles.copytrading__refresh_button}
+                                onClick={handleRefreshAccountData}
+                                title="Refresh account data"
+                            >
+                                🔄
+                            </button>
+                        </div>
 
                         <div className={styles.copytrading__account_details}>
                             <div className={styles.copytrading__account_info_item}>

@@ -109,6 +109,8 @@ export const getActiveWebsocket = () => {
  */
 const fetchAndStoreAccountInfo = async (send: TSendFunction) => {
     try {
+        console.log('[APIProvider] Starting to fetch account information...');
+
         // Get account information
         const accountInfoResponse = await send('get_account_status');
         console.log('[APIProvider] Account Info Response:', accountInfoResponse);
@@ -121,25 +123,55 @@ const fetchAndStoreAccountInfo = async (send: TSendFunction) => {
         const accountSettingsResponse = await send('get_settings');
         console.log('[APIProvider] Account Settings Response:', accountSettingsResponse);
 
-        // Extract the required information
+        // Get profile information for name
+        const profileResponse = await send('get_account_status');
+        console.log('[APIProvider] Profile Response:', profileResponse);
+
+        // Extract the required information with better error handling
         const accountInfo = {
-            name: '', // 'name' property does not exist, fallback to empty string
+            name: accountSettingsResponse?.get_settings?.first_name || 
+                  accountSettingsResponse?.get_settings?.last_name || 
+                  '',
             email: accountSettingsResponse?.get_settings?.email || '',
             balance: balanceResponse?.balance?.balance || 0,
             account_type: accountInfoResponse?.get_account_status?.status?.includes('financial') ? 'financial' : 'gaming',
             token: localStorage.getItem('client_token') || '',
-            loginid: localStorage.getItem('active_loginid') || ''
+            loginid: localStorage.getItem('active_loginid') || '',
+            currency: balanceResponse?.balance?.currency || localStorage.getItem('currency') || 'USD'
         };
 
-        // Print to console
+        // Print to console for debugging
         console.log('[APIProvider] Extracted Account Information:', accountInfo);
+        console.log('[APIProvider] Raw responses for debugging:');
+        console.log('- accountInfoResponse:', accountInfoResponse);
+        console.log('- balanceResponse:', balanceResponse);
+        console.log('- accountSettingsResponse:', accountSettingsResponse);
 
         // Store in localStorage
         localStorage.setItem('account_info', JSON.stringify(accountInfo));
         console.log('[APIProvider] Account information stored in localStorage');
 
+        // Also store individual values for backward compatibility
+        localStorage.setItem('balance', accountInfo.balance.toString());
+        localStorage.setItem('currency', accountInfo.currency);
+        localStorage.setItem('account_type', accountInfo.account_type);
+
     } catch (error) {
         console.error('[APIProvider] Error fetching account information:', error);
+        
+        // Store fallback data if API calls fail
+        const fallbackInfo = {
+            name: '',
+            email: '',
+            balance: 0,
+            account_type: 'gaming',
+            token: localStorage.getItem('client_token') || '',
+            loginid: localStorage.getItem('active_loginid') || '',
+            currency: localStorage.getItem('currency') || 'USD'
+        };
+        
+        localStorage.setItem('account_info', JSON.stringify(fallbackInfo));
+        console.log('[APIProvider] Stored fallback account information');
     }
 };
 
