@@ -49,3 +49,83 @@ export const loginUrl = ({ language }: TLoginUrl) => {
 
     return urlForCurrentDomain(getOAuthUrl());
 };
+
+/**
+ * Gets the current user's auth token from localStorage
+ * @returns {string|null} The auth token or null if not found
+ */
+export const getAuthToken = (): string | null => {
+    try {
+        const accounts = LocalStore.get('client.accounts');
+        const activeLoginid = LocalStore.get('active_loginid');
+        
+        if (!accounts || !activeLoginid) {
+            return null;
+        }
+        
+        const accountsData = typeof accounts === 'string' ? JSON.parse(accounts) : accounts;
+        return accountsData[activeLoginid]?.token || null;
+    } catch (error) {
+        console.error('Error getting auth token:', error);
+        return null;
+    }
+};
+
+/**
+ * Stores the auth token in localStorage for the current user
+ * @param {string} token - The auth token to store
+ * @param {string} loginid - The login ID (optional, uses active_loginid if not provided)
+ */
+export const storeAuthToken = (token: string, loginid?: string): void => {
+    try {
+        const activeLoginid = loginid || LocalStore.get('active_loginid');
+        
+        if (!activeLoginid) {
+            console.error('No active loginid found to store token');
+            return;
+        }
+        
+        // Get existing accounts data
+        const existingAccounts = LocalStore.get('client.accounts');
+        const accountsData = existingAccounts ? 
+            (typeof existingAccounts === 'string' ? JSON.parse(existingAccounts) : existingAccounts) : 
+            {};
+        
+        // Update the token for the current loginid
+        if (!accountsData[activeLoginid]) {
+            accountsData[activeLoginid] = {};
+        }
+        accountsData[activeLoginid].token = token;
+        
+        // Store back to localStorage
+        LocalStore.set('client.accounts', JSON.stringify(accountsData));
+        
+        // Also store as auth_token for easy access (used by copy trading)
+        LocalStore.set('auth_token', token);
+        
+        console.log('Auth token stored successfully for loginid:', activeLoginid);
+    } catch (error) {
+        console.error('Error storing auth token:', error);
+    }
+};
+
+/**
+ * Removes the auth token from localStorage
+ */
+export const removeAuthToken = (): void => {
+    try {
+        LocalStore.remove('auth_token');
+        console.log('Auth token removed from localStorage');
+    } catch (error) {
+        console.error('Error removing auth token:', error);
+    }
+};
+
+/**
+ * Checks if user is authenticated by verifying token exists
+ * @returns {boolean} True if user has a valid token
+ */
+export const isAuthenticated = (): boolean => {
+    const token = getAuthToken();
+    return !!token;
+};

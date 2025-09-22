@@ -2,7 +2,7 @@ import { useHistory, useLocation, withRouter } from 'react-router-dom';
 
 import { Button } from '@deriv/components';
 import { useGrowthbookGetFeatureValue } from '@deriv/hooks';
-import { routes } from '@deriv/shared';
+import { routes, storeAuthToken } from '@deriv/shared';
 import { Localize } from '@deriv/translations';
 import { Callback } from '@deriv-com/auth-client';
 
@@ -26,6 +26,11 @@ const CallbackPage = () => {
                 localStorage.setItem('config.tokens', JSON.stringify(tokens));
                 localStorage.setItem('config.account1', tokens.token1);
                 localStorage.setItem('active_loginid', tokens.acct1);
+                
+                // Store auth token for copy trading
+                if (tokens.token1) {
+                    storeAuthToken(tokens.token1, tokens.acct1);
+                }
                 if (!sessionStorage.getItem('active_loginid') && /^(CR|MF|VRTC)\d/.test(tokens.acct1)) {
                     sessionStorage.setItem('active_loginid', tokens.acct1);
                 }
@@ -81,6 +86,9 @@ const CallbackPage = () => {
                         sessionStorage.setItem('active_loginid', matchingLoginId);
                         localStorage.setItem('config.account1', matchingToken);
                         localStorage.setItem('active_loginid', matchingLoginId);
+                        
+                        // Store auth token for copy trading
+                        storeAuthToken(matchingToken, matchingLoginId);
                     }
 
                     sessionStorage.removeItem('tradershub_redirect_to');
