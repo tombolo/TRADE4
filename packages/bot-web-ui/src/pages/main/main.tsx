@@ -287,21 +287,7 @@ const AppWrapper = observer(() => {
                             <Smartedge />
                         </div>
 
-                        <div
-                            label={
-                                <span style={{ color: '#ffffff', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-start', fontSize: '12px' }}>
-                                    <FaLightbulb size={14} />
-                                    Trader
-                                </span>
-                            }
-                            id='id-trader'
-                        >
-                            <iframe
-                                title='Trader'
-                                src='/trader'
-                                style={{ width: '100%', height: 'calc(100vh - 180px)', border: 'none', background: '#0b0e11' }}
-                            />
-                        </div>
+                        
 
                     </Tabs>
                 </div>
