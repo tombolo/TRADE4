@@ -17,11 +17,9 @@ import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
 import RunStrategy from '../dashboard/run-strategy';
 import Tutorial from '../tutorials';
-import { tour_list } from '../tutorials/dbot-tours/utils';
 import { getPlatformSettings } from '@deriv/shared';
 import Finesttool from '../finesttool';
-import RiskManagementCalculator from '../riskManagementCalculator';
-import Strategy from '../strategy';
+
  
 import Copytrading from '../copytrading';
 import Botlist from '../botlist';
