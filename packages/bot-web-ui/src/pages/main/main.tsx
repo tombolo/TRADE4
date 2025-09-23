@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { routes } from '@deriv/shared';
+import { makeLazyLoader, moduleLoader } from '@deriv/shared';
 import classNames from 'classnames';
 import { updateWorkspaceName } from '@deriv/bot-skeleton';
 import dbot from '@deriv/bot-skeleton/src/scratch/dbot';
@@ -22,6 +23,9 @@ import { getPlatformSettings } from '@deriv/shared';
 import Finesttool from '../finesttool';
 import RiskManagementCalculator from '../riskManagementCalculator';
 import Strategy from '../strategy';
+import ProgressLoader from '../../components/progress-loader/ProgressLoader';
+import type { TStores } from '@deriv/stores/types';
+import type { TWebSocket } from 'Types';
 import Copytrading from '../copytrading';
 import Botlist from '../botlist';
 import Smartedge from '../smartedge';
@@ -29,6 +33,18 @@ import Dptool from '../dptool';
 import { MdSchema, MdGridOn } from 'react-icons/md';
 import { FaChartBar, FaChartLine, FaPuzzlePiece, FaChessKnight, FaUsers, FaShieldAlt, FaRobot, FaTachometerAlt, FaExchangeAlt, FaCopy, FaLightbulb } from 'react-icons/fa';
 
+
+type TraderApptypes = {
+    passthrough: {
+        root_store: TStores;
+        WS: TWebSocket;
+    };
+};
+
+const TraderApp = makeLazyLoader(
+    () => moduleLoader(() => import(/* webpackChunkName: 'embedded-trader-app', webpackPreload: true */ '@deriv/trader')),
+    () => <ProgressLoader fullscreen label='Loading Trader…' />
+)() as React.ComponentType<TraderApptypes>;
 
 const AppWrapper = observer(() => {
 
@@ -54,11 +70,13 @@ const AppWrapper = observer(() => {
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const { ui } = useStore();
+    const root_store = useStore();
+    const { ui } = root_store;
     const { url_hashed_values, is_desktop } = ui;
+    const { ws } = useDBotStore();
 
 
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'botlist', 'finesttool', 'copytrading', 'risk_management_calculator', 'strategy'];
+    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'botlist', 'finesttool', 'copytrading', 'risk_management_calculator', 'strategy', 'trader'];
 
     let tab_value: number | string = active_tab;
     const GetHashedValue = (tab: number) => {
@@ -284,13 +302,17 @@ const AppWrapper = observer(() => {
                             <Smartedge />
                         </div>
 
-
-
-
-                        
-
-
-
+                        <div
+                            label={
+                                <span style={{ color: '#ffffff', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-start', fontSize: '12px' }}>
+                                    <FaLightbulb size={14} />
+                                    Trader
+                                </span>
+                            }
+                            id='id-trader'
+                        >
+                            <TraderApp passthrough={{ root_store, WS: ws }} />
+                        </div>
 
                     </Tabs>
                 </div>
