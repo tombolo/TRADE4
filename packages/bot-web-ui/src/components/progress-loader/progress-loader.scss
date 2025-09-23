@@ -4,35 +4,33 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    pointer-events: none;
 
     &--fullscreen {
         position: fixed;
         inset: 0;
         z-index: 10000;
-        background: radial-gradient(1200px 800px at 50% -20%, rgba(255, 215, 0, 0.08), transparent 60%),
-            linear-gradient(135deg, rgba(10, 10, 15, 0.96), rgba(26, 26, 42, 0.96));
-        backdrop-filter: blur(2px);
+        background:
+            radial-gradient(1200px 800px at 50% -10%, rgba(255, 215, 0, 0.08), transparent 60%),
+            linear-gradient(135deg, #0a0a0f, #1a1a2a);
     }
 
     &__container {
-        width: min(560px, 90%);
+        width: min(560px, 92%);
         display: flex;
         flex-direction: column;
         gap: 12px;
-        transform: translateZ(0);
     }
 
-    &__glow {
+    &__logo-glow {
         position: absolute;
-        width: 280px;
-        height: 280px;
+        width: 300px;
+        height: 300px;
         border-radius: 50%;
+        left: 50%;
+        top: calc(50% - 140px);
+        transform: translate(-50%, -50%);
         background: radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, rgba(255, 215, 0, 0) 70%);
         filter: blur(18px);
-        left: 50%;
-        top: calc(50% - 120px);
-        transform: translate(-50%, -50%);
         pointer-events: none;
     }
 
@@ -49,10 +47,10 @@
 
     &__bar {
         position: absolute;
-        left: 0;
+        left: -20%;
         top: 0;
         height: 100%;
-        width: 28%;
+        width: 30%;
         border-radius: inherit;
         background: linear-gradient(90deg, #000000, #ffd700, #ffffff);
         box-shadow: 0 0 14px rgba(255, 215, 0, 0.55), 0 0 34px rgba(255, 215, 0, 0.2);
@@ -68,7 +66,7 @@
         pointer-events: none;
     }
 
-    &__particles {
+    &__sparkles {
         position: absolute;
         inset: 0;
         pointer-events: none;
@@ -81,9 +79,9 @@
             background: #ffd700;
             box-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255, 215, 0, 0.5);
             transform: translate(-50%, -50%);
-            &:nth-child(1) { left: 20%; animation: particle-float 1.6s ease-in-out infinite; }
+            &:nth-child(1) { left: 18%; animation: particle-float 1.6s ease-in-out infinite; }
             &:nth-child(2) { left: 50%; animation: particle-float 1.6s ease-in-out infinite 0.2s; }
-            &:nth-child(3) { left: 80%; animation: particle-float 1.6s ease-in-out infinite 0.4s; }
+            &:nth-child(3) { left: 82%; animation: particle-float 1.6s ease-in-out infinite 0.4s; }
         }
     }
 

@@ -10,7 +10,7 @@ const BlocklyLoading = observer(() => {
         <>
             {is_loading && (
                 <div className='bot__loading' data-testid='blockly-loader'>
-                    <ProgressLoader label='Loading workspace…' />
+                    <ProgressLoader fullscreen label='Loading workspace…' />
                 </div>
             )}
         </>

@@ -8,24 +8,22 @@ type ProgressLoaderProps = {
     label?: string;
 };
 
-const ProgressLoader: React.FC<ProgressLoaderProps> = ({ className, fullscreen = false, label }) => {
-    return (
-        <div className={classNames('progress-loader', { 'progress-loader--fullscreen': fullscreen }, className)} data-testid='progress-loader'>
-            <div className='progress-loader__container'>
-                <div className='progress-loader__glow' />
-                <div className='progress-loader__track'>
-                    <div className='progress-loader__bar'>
-                        <span className='progress-loader__shine' />
-                        <span className='progress-loader__particles'>
-                            <i /><i /><i />
-                        </span>
-                    </div>
+const ProgressLoader: React.FC<ProgressLoaderProps> = ({ className, fullscreen = false, label }) => (
+    <div className={classNames('progress-loader', { 'progress-loader--fullscreen': fullscreen }, className)} data-testid='progress-loader'>
+        <div className='progress-loader__container'>
+            <div className='progress-loader__logo-glow' />
+            <div className='progress-loader__track'>
+                <div className='progress-loader__bar'>
+                    <span className='progress-loader__shine' />
+                    <span className='progress-loader__sparkles'>
+                        <i /><i /><i />
+                    </span>
                 </div>
-                {label && <div className='progress-loader__label'>{label}</div>}
             </div>
+            {label && <div className='progress-loader__label'>{label}</div>}
         </div>
-    );
-};
+    </div>
+);
 
 export default ProgressLoader;
 
