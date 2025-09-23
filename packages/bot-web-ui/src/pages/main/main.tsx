@@ -291,7 +291,7 @@ const AppWrapper = observer(() => {
                             label={
                                 <span style={{ color: '#ffffff', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-start', fontSize: '12px' }}>
                                     <FaLightbulb size={14} />
-                                    Traderp
+                                    Trader
                                 </span>
                             }
                             id='id-trader'
