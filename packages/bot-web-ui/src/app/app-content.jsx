@@ -1,7 +1,7 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { api_base, ApiHelpers, ServerTime } from '@deriv/bot-skeleton';
-import { Loading } from '@deriv/components';
+import ProgressLoader from '../components/progress-loader/ProgressLoader';
 import { observer, useStore } from '@deriv/stores';
 import TransactionDetailsModal from 'Components/transaction-details';
 import GTM from 'Utils/gtm';
@@ -127,7 +127,7 @@ const AppContent = observer(() => {
     }, []);
 
     return is_loading ? (
-        <Loading />
+        <ProgressLoader fullscreen label='Preparing DBot…' />
     ) : (
         <>
             <BlocklyLoading />
