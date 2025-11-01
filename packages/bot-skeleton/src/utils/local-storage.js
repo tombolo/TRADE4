@@ -97,7 +97,17 @@ export const getSavedWorkspaces = async () => {
 export const loadStrategy = async strategy_id => {
     console.log(`[DEBUG] Attempting to load bot: ${strategy_id}`);
 
+    // Check for duplicate IDs
     const staticBots = getStaticBots();
+    const duplicateIds = staticBots.filter((bot, index) => staticBots.findIndex(b => b.id === bot.id) !== index);
+
+    if (duplicateIds.length > 0) {
+        console.error(
+            '[ERROR] Duplicate bot IDs found:',
+            duplicateIds.map(b => b.id)
+        );
+    }
+
     const strategy = staticBots.find(bot => bot.id === strategy_id);
 
     if (!strategy) {
@@ -109,96 +119,34 @@ export const loadStrategy = async strategy_id => {
     }
 
     try {
-        // Get Blockly instance
-        const Blockly = getBlockly();
-        
         // Check if workspace is initialized
         if (!Blockly.derivWorkspace) {
             console.error('[ERROR] Blockly workspace not initialized');
             return false;
         }
 
-        // Completely reset the workspace first
-        console.log(`[DEBUG] Resetting workspace before loading bot: ${strategy_id}`);
-        resetWorkspace(Blockly);
+        // Clear existing workspace first
+        console.log('[DEBUG] Clearing existing workspace');
+        Blockly.derivWorkspace.clear();
 
-        // Get the XML content
-        let xmlContent;
-        if (typeof strategy.xml === 'string') {
-            xmlContent = strategy.xml;
-        } else if (strategy.xml && typeof strategy.xml.default === 'string') {
-            xmlContent = strategy.xml.default;
-        } else {
-            console.error('[ERROR] Invalid XML content format for bot:', strategy_id);
-            return false;
-        }
-
-        // Parse the XML content
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
-        
-        // Check for XML parsing errors
-        const parserError = xmlDoc.querySelector('parsererror');
-        if (parserError) {
-            console.error('[ERROR] XML parsing error:', parserError.textContent);
+        const xmlDom = parser.parseFromString(strategy.xml, 'text/xml').documentElement;
+
+        // Check if XML is valid
+        if (xmlDom.querySelector('parsererror')) {
+            console.error('[ERROR] Invalid XML content for bot:', strategy_id);
             return false;
         }
 
-        const xmlDom = xmlDoc.documentElement;
         const convertedXml = convertStrategyToIsDbot(xmlDom);
 
-        // Disable events during load to prevent interference
-        Blockly.Events.disable();
-        
-        try {
-            // Clear any existing blocks (triple-check)
-            Blockly.derivWorkspace.clear();
-            
-            // Ensure the workspace is clean
-            Blockly.derivWorkspace.clearUndo();
-            
-            // Create a new XML document to ensure clean state
-            const xmlText = Blockly.Xml.domToText(convertedXml);
-            const newXml = Blockly.Xml.textToDom(xmlText);
-            
-            // Load the new blocks
-            Blockly.Xml.domToWorkspace(newXml, Blockly.derivWorkspace);
-            
-            // Store the current strategy ID
-            Blockly.derivWorkspace.current_strategy_id = strategy_id;
-            
-            // Force a re-render after a short delay
-            setTimeout(() => {
-                try {
-                    if (Blockly.derivWorkspace.svgResize) {
-                        Blockly.derivWorkspace.svgResize();
-                    }
-                    Blockly.derivWorkspace.render();
-                    
-                    // Force variable cleanup
-                    if (Blockly.derivWorkspace.getVariableMap) {
-                        const variableMap = Blockly.derivWorkspace.getVariableMap();
-                        if (variableMap && variableMap.clear) {
-                            variableMap.clear();
-                        }
-                    }
-                    
-                    console.log(`[SUCCESS] Loaded static bot: ${strategy.name} (ID: ${strategy_id})`);
-                } catch (renderError) {
-                    console.error('Error during workspace render:', renderError);
-                }
-            }, 150);
-            
-            return true;
-        } catch (loadError) {
-            console.error('Error loading bot:', loadError);
-            return false;
-        } finally {
-            // Always re-enable events
-            Blockly.Events.enable();
-        }
+        Blockly.Xml.domToWorkspace(convertedXml, Blockly.derivWorkspace);
+        Blockly.derivWorkspace.current_strategy_id = strategy_id;
+
+        console.log(`[SUCCESS] Loaded static bot: ${strategy.name} (ID: ${strategy_id})`);
+        return true;
     } catch (error) {
-        console.error('Error in loadStrategy:', error);
+        console.error('Error loading static bot:', error);
         return false;
     }
 };
@@ -224,29 +172,3 @@ export const convertStrategyToIsDbot = xml_dom => {
 localStorage.removeItem('saved_workspaces');
 localStorage.removeItem('recent_strategies');
 console.log('[INFO] Cleared saved/recent bots → Static bots only.');
-
-// 🧪 Test function to verify all bots can be parsed
-export const testAllBots = () => {
-    const staticBots = getStaticBots();
-    console.log('[TEST] Testing all bot XML files...');
-    
-    staticBots.forEach(bot => {
-        try {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(bot.xml, 'text/xml');
-            const hasErrors = doc.getElementsByTagName('parsererror').length > 0;
-            
-            if (hasErrors) {
-                console.error(`[TEST FAIL] ${bot.id}: XML parsing error`);
-                console.error(`[TEST FAIL] XML preview:`, bot.xml.substring(0, 300) + '...');
-            } else {
-                console.log(`[TEST PASS] ${bot.id}: XML is valid (${bot.xml.length} chars)`);
-            }
-        } catch (e) {
-            console.error(`[TEST FAIL] ${bot.id}: Exception during parsing:`, e.message);
-        }
-    });
-};
-
-// Run test on load
-setTimeout(testAllBots, 1000);
