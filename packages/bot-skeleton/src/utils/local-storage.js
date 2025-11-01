@@ -122,48 +122,83 @@ export const loadStrategy = async strategy_id => {
         console.log(`[DEBUG] Resetting workspace before loading bot: ${strategy_id}`);
         resetWorkspace(Blockly);
 
-        // Parse the XML content
-        const parser = new DOMParser();
-        const xmlString = typeof strategy.xml === 'string' ? strategy.xml : strategy.xml.default || '';
-        const xmlDom = parser.parseFromString(xmlString, 'text/xml').documentElement;
-
-        // Check if XML is valid
-        if (xmlDom.querySelector('parsererror')) {
-            console.error('[ERROR] Invalid XML content for bot:', strategy_id);
+        // Get the XML content
+        let xmlContent;
+        if (typeof strategy.xml === 'string') {
+            xmlContent = strategy.xml;
+        } else if (strategy.xml && typeof strategy.xml.default === 'string') {
+            xmlContent = strategy.xml.default;
+        } else {
+            console.error('[ERROR] Invalid XML content format for bot:', strategy_id);
             return false;
         }
 
+        // Parse the XML content
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+        
+        // Check for XML parsing errors
+        const parserError = xmlDoc.querySelector('parsererror');
+        if (parserError) {
+            console.error('[ERROR] XML parsing error:', parserError.textContent);
+            return false;
+        }
+
+        const xmlDom = xmlDoc.documentElement;
         const convertedXml = convertStrategyToIsDbot(xmlDom);
 
         // Disable events during load to prevent interference
         Blockly.Events.disable();
         
         try {
-            // Clear any existing blocks (double-check)
+            // Clear any existing blocks (triple-check)
             Blockly.derivWorkspace.clear();
             
+            // Ensure the workspace is clean
+            Blockly.derivWorkspace.clearUndo();
+            
+            // Create a new XML document to ensure clean state
+            const xmlText = Blockly.Xml.domToText(convertedXml);
+            const newXml = Blockly.Xml.textToDom(xmlText);
+            
             // Load the new blocks
-            Blockly.Xml.domToWorkspace(convertedXml, Blockly.derivWorkspace);
+            Blockly.Xml.domToWorkspace(newXml, Blockly.derivWorkspace);
             
             // Store the current strategy ID
             Blockly.derivWorkspace.current_strategy_id = strategy_id;
             
-            // Force a re-render
+            // Force a re-render after a short delay
             setTimeout(() => {
-                if (Blockly.derivWorkspace.svgResize) {
-                    Blockly.derivWorkspace.svgResize();
+                try {
+                    if (Blockly.derivWorkspace.svgResize) {
+                        Blockly.derivWorkspace.svgResize();
+                    }
+                    Blockly.derivWorkspace.render();
+                    
+                    // Force variable cleanup
+                    if (Blockly.derivWorkspace.getVariableMap) {
+                        const variableMap = Blockly.derivWorkspace.getVariableMap();
+                        if (variableMap && variableMap.clear) {
+                            variableMap.clear();
+                        }
+                    }
+                    
+                    console.log(`[SUCCESS] Loaded static bot: ${strategy.name} (ID: ${strategy_id})`);
+                } catch (renderError) {
+                    console.error('Error during workspace render:', renderError);
                 }
-                Blockly.derivWorkspace.render();
-            }, 100);
+            }, 150);
             
-            console.log(`[SUCCESS] Loaded static bot: ${strategy.name} (ID: ${strategy_id})`);
             return true;
+        } catch (loadError) {
+            console.error('Error loading bot:', loadError);
+            return false;
         } finally {
             // Always re-enable events
             Blockly.Events.enable();
         }
     } catch (error) {
-        console.error('Error loading static bot:', error);
+        console.error('Error in loadStrategy:', error);
         return false;
     }
 };
