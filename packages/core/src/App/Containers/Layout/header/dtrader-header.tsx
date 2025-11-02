@@ -134,9 +134,7 @@ const DTraderHeader = observer(() => {
                                     <a href='' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
                                         <Icon icon='IcTelegram' width={20} height={20} />
                                     </a>
-                                    <a href='' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
-                                        <InstagramIcon />
-                                    </a>
+                                    
                                 </div>
                             </div>
                         </React.Fragment>
