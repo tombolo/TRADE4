@@ -113,16 +113,16 @@ const DefaultHeader = observer(() => {
                                     />
                                 )}
                                 <div className='header__socials'>
-                                    <a href='https://t.me/states36\' target='_blank' rel='noopener noreferrer' aria-label='Facebook'>
+                                    <a href='' target='_blank' rel='noopener noreferrer' aria-label='Facebook'>
                                         <Icon icon='IcFacebook' width={20} height={20} />
                                     </a>
-                                    <a href='https://t.me/states36/@rugara.site?_t=ZM-90iMtuyT75Y&_r=1' target='_blank' rel='noopener noreferrer' aria-label='WhatsApp'>
+                                    <a href='' target='_blank' rel='noopener noreferrer' aria-label='WhatsApp'>
                                         <Icon icon='IcWhatsappFilled' width={20} height={20} />
                                     </a>
-                                    <a href='https://www.instagram.com/states4901?igsh=NXZyN242Z3Y3dzc0&utm_source=qr' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
+                                    <a href='' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
                                         <Icon icon='IcTelegram' width={20} height={20} />
                                     </a>
-                                    <a href='https://www.instagram.com/states4901?igsh=NXZyN242Z3Y3dzc0&utm_source=qr' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
+                                    <a href='' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
                                         <InstagramIcon />
                                     </a>
                                 </div>
