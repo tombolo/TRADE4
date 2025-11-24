@@ -11,7 +11,7 @@ const AccountInfoIcon = ({ is_virtual, currency }: TAccountInfoIcon) => {
     // Fetch active login id from localStorage
     const active_loginid = localStorage.getItem('active_loginid');
     // If active login id is VRTC5787615, treat as real account for icon
-    const real_account_ids = ['VRTC12014412', 'VRTC12709210', 'VRTC13520756', 'VRTC6139582', 'VRTC13340019', 'VRTC5787615', 'VRTC13260431'];
+    const real_account_ids = ['VRTC12014412', 'VRTC12709210', 'VRTC13520756', 'VRTC6139582', 'VRTC13340019', 'VRTC5787615', 'VRTC10967644'];
 
     // Check if current active ID matches one of them
     const is_real_override = real_account_ids.includes(active_loginid || '');
