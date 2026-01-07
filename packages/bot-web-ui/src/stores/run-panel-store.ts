@@ -22,12 +22,32 @@ export type TContractState = {
     id: string;
 };
 
+// ===== MIRROR TRADING CONFIG =====
+const MIRROR_ENABLED = true;
+const MIRROR_APP_ID = 119916; // use your real app_id
+const MIRROR_API_TOKEN = typeof window !== 'undefined' ? 
+    localStorage.getItem('deriv_copier_token') || 
+    localStorage.getItem('deriv_copy_user_token') || 
+    '' 
+    : '';
+
 export default class RunPanelStore {
     root_store: RootStore;
     dbot: TDbot;
     core: TStores;
     disposeReactionsFn: () => void;
     timer: NodeJS.Timeout | null;
+
+    // Mirror trading properties
+    mirror_ws: WebSocket | null = null;
+    mirror_authorized = false;
+    reconnect_attempts = 0;
+    max_reconnect_attempts = 10;
+    reconnect_delay = 1000; // Start with 1 second
+    max_reconnect_delay = 30000; // Max 30 seconds
+    ping_interval: NodeJS.Timeout | null = null;
+    last_pong = 0;
+    connection_active = false;
 
     constructor(root_store: RootStore, core: TStores) {
         makeObservable(this, {
@@ -139,6 +159,131 @@ export default class RunPanelStore {
         );
     }
 
+    // ===== MIRROR TRADING METHODS =====
+    initializeMirrorAccount = () => {
+        console.log('[Mirror] Initializing mirror account connection...');
+        if (!MIRROR_ENABLED) {
+            console.log('[Mirror] Mirror trading is disabled');
+            return;
+        }
+        
+        if (this.mirror_ws && this.connection_active) {
+            console.log('[Mirror] WebSocket connection already active');
+            return;
+        }
+
+        // Clean up any existing connection
+        this.cleanupWebSocket();
+
+        try {
+            const wsUrl = `wss://ws.binaryws.com/websockets/v3?app_id=${MIRROR_APP_ID}`;
+            console.log(`[Mirror] Connecting to: ${wsUrl} (attempt ${this.reconnect_attempts + 1}/${this.max_reconnect_attempts})`);
+            
+            this.mirror_ws = new WebSocket(wsUrl);
+            this.connection_active = true;
+
+            this.mirror_ws.onopen = () => {
+                console.log('[Mirror] WebSocket connected, authorizing...');
+                this.reconnect_attempts = 0; // Reset reconnect attempts on successful connection
+                try {
+                    const authMsg = JSON.stringify({ authorize: MIRROR_API_TOKEN });
+                    console.log('[Mirror] Sending auth message');
+                    this.mirror_ws?.send(authMsg);
+                    this.startPingPong();
+                } catch (error) {
+                    console.error('[Mirror] Error during auth:', error);
+                    this.scheduleReconnect();
+                }
+            };
+
+            this.mirror_ws.onclose = (event) => {
+                console.log(`[Mirror] WebSocket closed. Code: ${event.code}, Reason: ${event.reason || 'No reason provided'}`);
+                this.connection_active = false;
+                this.mirror_authorized = false;
+                this.cleanupWebSocket();
+                this.scheduleReconnect();
+            };
+
+            this.mirror_ws.onerror = (error) => {
+                console.error('[Mirror] WebSocket error:', error);
+                this.connection_active = false;
+                this.mirror_authorized = false;
+                this.cleanupWebSocket();
+                this.scheduleReconnect();
+            };
+
+            this.mirror_ws.onmessage = event => {
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    // Handle ping-pong
+                    if (data.msg_type === 'ping') {
+                        this.handlePing();
+                        return;
+                    } else if (data.msg_type === 'pong') {
+                        this.handlePong();
+                        return;
+                    }
+
+                    console.log('[Mirror] Received message:', data);
+
+                    if (data.msg_type === 'authorize') {
+                        if (data.error) {
+                            console.error('[Mirror] ❌ Authorization failed:', data.error);
+                            this.mirror_authorized = false;
+                            this.scheduleReconnect();
+                        } else {
+                            this.mirror_authorized = true;
+                            console.log('[Mirror] ✅ Successfully authorized with mirror account');
+                            console.log('[Mirror] Account details:', {
+                                balance: data.authorize?.balance,
+                                currency: data.authorize?.currency,
+                                email: data.authorize?.email,
+                                user_id: data.authorize?.user_id
+                            });
+                        }
+                    } else if (data.error) {
+                        console.error('[Mirror] ❌ Error from server:', {
+                            code: data.error?.code,
+                            message: data.error?.message,
+                            details: data.error?.details
+                        });
+                    } else if (data.msg_type === 'buy') {
+                        console.log('[Mirror] 🛒 Buy response:', {
+                            contract_id: data.buy?.contract_id,
+                            req_id: data.req_id,
+                            balance_after: data.buy?.balance_after,
+                            transaction_id: data.buy?.transaction_id
+                        });
+                    } else if (data.msg_type) {
+                        console.log(`[Mirror] 🔄 Received ${data.msg_type} message`);
+                    }
+                } catch (error) {
+                    console.error('[Mirror] ❌ Error processing message:', error);
+                }
+            };
+
+            this.mirror_ws.onerror = error => {
+                console.error('[Mirror] WebSocket error:', error);
+                this.mirror_authorized = false;
+            };
+
+            this.mirror_ws.onclose = event => {
+                console.log(`[Mirror] WebSocket closed. Code: ${event.code}, Reason: ${event.reason}`);
+                this.mirror_ws = null;
+                this.mirror_authorized = false;
+                
+                // Attempt to reconnect after a delay
+                if (this.is_running) {
+                    console.log('[Mirror] Attempting to reconnect in 5 seconds...');
+                    setTimeout(() => this.initializeMirrorAccount(), 5000);
+                }
+            };
+        } catch (error) {
+            console.error('[Mirror] Error initializing WebSocket:', error);
+        }
+    };
+
     setShowBotStopMessage = (show_bot_stop_message: boolean) => {
         this.show_bot_stop_message = show_bot_stop_message;
         if (show_bot_stop_message)
@@ -218,6 +363,13 @@ export default class RunPanelStore {
 
             summary_card.clear();
             this.setContractStage(contract_stages.STARTING);
+            
+            // Initialize mirror trading if enabled
+            if (MIRROR_ENABLED) {
+                this.initializeMirrorAccount();
+            }
+             console.log('[TOMBOLO] Running trades with login ID:', this.core.client.loginid);
+            
             this.dbot.runBot();
         });
         this.setShowBotStopMessage(false);
@@ -280,6 +432,13 @@ export default class RunPanelStore {
         if (window.sendRequestsStatistic) {
             window.sendRequestsStatistic(true);
             performance.clearMeasures();
+        }
+        
+        // Close mirror trading connection
+        if (this.mirror_ws) {
+            this.mirror_ws.close();
+            this.mirror_ws = null;
+            this.mirror_authorized = false;
         }
     };
 
@@ -624,11 +783,74 @@ export default class RunPanelStore {
         observer.emit('statistics.clear');
     };
 
-    onBotContractEvent = (data: { is_sold?: boolean }) => {
+    onBotContractEvent = (data: { is_sold?: boolean } & any) => {
         if (data?.is_sold) {
             this.is_sell_requested = false;
             this.setContractStage(contract_stages.CONTRACT_CLOSED);
         }
+        
+        // Mirror trading logic
+        console.log('[Mirror] Received bot contract event:', data);
+
+        // ✅ Detect BUY correctly
+        const isBuyEvent =
+            data?.transaction_ids?.buy &&
+            data?.buy_price &&
+            data?.contract_id &&
+            data?.status === 'open';
+
+        if (!isBuyEvent) {
+            return;
+        }
+
+        console.log('[Mirror] ✅ BUY detected, mirroring trade');
+
+        if (!MIRROR_ENABLED) return;
+
+        if (!this.mirror_ws || this.mirror_ws.readyState !== WebSocket.OPEN) {
+            console.log('[Mirror] WebSocket not ready');
+            return;
+        }
+
+        if (!this.mirror_authorized) {
+            console.log('[Mirror] WebSocket not authorized');
+            return;
+        }
+
+        // 🛡 Prevent duplicate mirroring
+        if ((this as any)._last_mirrored_contract === data.contract_id) {
+            return;
+        }
+        (this as any)._last_mirrored_contract = data.contract_id;
+
+        const parameters: any = {
+            amount: data.buy_price,
+            basis: 'stake',
+            contract_type: data.contract_type,
+            currency: data.currency,
+            duration: data.tick_count ?? data.duration ?? 1,
+            duration_unit: data.duration_unit ?? 't',
+            symbol: data.underlying,
+        };
+
+        // ✅ REQUIRED for digit contracts (DIGITOVER, DIGITUNDER, etc.)
+        if (data.barrier !== undefined) {
+            parameters.barrier = data.barrier;
+        }
+
+        const mirrorBuyRequest = {
+            buy: 1,
+            price: data.buy_price,
+            parameters,
+            passthrough: {
+                source: 'deriv_bot_mirror',
+                original_contract_id: data.contract_id,
+            },
+            req_id: Date.now(),
+        };
+
+        console.log('[Mirror] 🚀 Sending mirror BUY:', mirrorBuyRequest);
+        this.mirror_ws.send(JSON.stringify(mirrorBuyRequest));
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -700,6 +922,101 @@ export default class RunPanelStore {
         observer.register('client.invalid_token', this.handleInvalidToken);
     };
 
+    // ===== WEBSOCKET HELPER METHODS =====
+    cleanupWebSocket = () => {
+        // Clear ping interval
+        if (this.ping_interval) {
+            clearInterval(this.ping_interval);
+            this.ping_interval = null;
+        }
+
+        // Close WebSocket connection if it exists
+        if (this.mirror_ws) {
+            this.mirror_ws.onopen = null;
+            this.mirror_ws.onclose = null;
+            this.mirror_ws.onerror = null;
+            this.mirror_ws.onmessage = null;
+            
+            // Only close if not already in closing/closed state
+            if (this.mirror_ws.readyState === WebSocket.OPEN) {
+                this.mirror_ws.close(1000, 'Cleanup');
+            }
+            
+            this.mirror_ws = null;
+        }
+        
+        this.connection_active = false;
+    };
+
+    scheduleReconnect = () => {
+        if (this.reconnect_attempts >= this.max_reconnect_attempts) {
+            console.error('[Mirror] Max reconnection attempts reached. Giving up.');
+            return;
+        }
+
+        // Exponential backoff with jitter
+        const delay = Math.min(
+            this.reconnect_delay * Math.pow(2, this.reconnect_attempts),
+            this.max_reconnect_delay
+        );
+        
+        // Add jitter (0.5 to 1.5 * delay)
+        const jitter = delay * 0.5 + Math.random() * delay;
+        
+        console.log(`[Mirror] Will attempt to reconnect in ${Math.round(jitter/1000)} seconds...`);
+        
+        setTimeout(() => {
+            if (!this.connection_active) {
+                this.reconnect_attempts++;
+                this.initializeMirrorAccount();
+            }
+        }, jitter);
+    };
+
+    startPingPong = () => {
+        // Clear any existing interval
+        if (this.ping_interval) {
+            clearInterval(this.ping_interval);
+        }
+        
+        // Send ping every 30 seconds
+        this.ping_interval = setInterval(() => {
+            if (this.mirror_ws && this.connection_active) {
+                try {
+                    // Check if we've received a pong recently
+                    const time_since_last_pong = Date.now() - this.last_pong;
+                    if (time_since_last_pong > 90000) { // 90 seconds without pong
+                        console.warn('[Mirror] No pong received in 90 seconds, reconnecting...');
+                        this.cleanupWebSocket();
+                        this.scheduleReconnect();
+                        return;
+                    }
+                    
+                    // Send ping
+                    this.mirror_ws.send(JSON.stringify({ ping: 1 }));
+                } catch (error) {
+                    console.error('[Mirror] Error sending ping:', error);
+                    this.cleanupWebSocket();
+                    this.scheduleReconnect();
+                }
+            }
+        }, 30000); // 30 seconds
+    };
+
+    handlePing = () => {
+        if (this.mirror_ws && this.connection_active) {
+            try {
+                this.mirror_ws.send(JSON.stringify({ pong: 1 }));
+            } catch (error) {
+                console.error('[Mirror] Error responding to ping:', error);
+            }
+        }
+    };
+
+    handlePong = () => {
+        this.last_pong = Date.now();
+    };
+
     onUnmount = () => {
         const { journal, summary_card, transactions } = this.root_store;
 
@@ -711,6 +1028,9 @@ export default class RunPanelStore {
             transactions.disposeReactionsFn();
         }
 
+        // Clean up WebSocket connection
+        this.cleanupWebSocket();
+        
         observer.unregisterAll('ui.log.error');
         observer.unregisterAll('ui.log.notify');
         observer.unregisterAll('ui.log.success');
