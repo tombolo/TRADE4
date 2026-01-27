@@ -40,45 +40,10 @@ const getBlockly = () => {
 
 // Static bot configurations - Legacy bots first, then master bots
 const STATIC_BOTS = {
-    auto_102_by_legacy_hub: {
-        id: 'auto_102_by_legacy_hub',
-        name: 'Auto 102 By Legacy Hub',
-        xml: Auto102ByLegacyHub,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    even_even_odd_odd_bot: {
-        id: 'even_even_odd_odd_bot',
-        name: 'Even Even Odd Odd Bot',
-        xml: EvenEvenOddOddBot,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    enhanced_auto_switch_over_2: {
-        id: 'enhanced_auto_switch_over_2',
-        name: 'Enhanced Auto Switch Over 2',
-        xml: EnhancedAutoSwitchOver2Bot,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    odd_odd_even_even_bot: {
-        id: 'odd_odd_even_even_bot',
-        name: 'Odd Odd Even Even Bot',
-        xml: OddOddEvenEvenBot,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
     over_destroyer_by_legacy: {
         id: 'over_destroyer_by_legacy',
         name: 'Over Destroyer By Legacy',
         xml: OverDestroyerByLegacy,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    under_7_8_ai_bot: {
-        id: 'under_7_8_ai_bot',
-        name: 'Under 7/8 AI Bot',
-        xml: Under7_8_AIBot,
         timestamp: Date.now(),
         save_type: save_types.LOCAL,
     },
@@ -110,27 +75,6 @@ const STATIC_BOTS = {
         timestamp: Date.now(),
         save_type: save_types.LOCAL,
     },
-    dollar_flipper: {
-        id: 'dollar_flipper',
-        name: 'Dollar Flipper',
-        xml: Dollarflipper,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    dollar_miner: {
-        id: 'dollar_miner',
-        name: 'Dollar Miner',
-        xml: Dollarminer,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    even_odd_auto_switcher: {
-        id: 'even_odd_auto_switcher',
-        name: 'Even Odd Auto Switcher',
-        xml: EvenOddAutoSwitcher,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
     vx_auto_switcher: {
         id: 'vx_auto_switcher',
         name: 'Vx Auto Switcher',
@@ -138,62 +82,6 @@ const STATIC_BOTS = {
         timestamp: Date.now(),
         save_type: save_types.LOCAL,
     },
-    auto_v1: {
-        id: 'auto_v1',
-        name: 'Auto V1 By State FX',
-        xml: AutoV1ByStateFX,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    deriv_wizard: {
-        id: 'deriv_wizard',
-        name: 'Deriv Wizard',
-        xml: DerivWizard,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    enhanced_v1: {
-        id: 'enhanced_v1',
-        name: 'Enhanced V1',
-        xml: EnhancedV1ByStateFX,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    master_g8: {
-        id: 'master_g8',
-        name: 'Gainer xvt scun entry point',
-        xml: MasterG8ByStateFX,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    metro_v4: {
-        id: 'metro_v4',
-        name: 'Metro V4 Even Odd Bot',
-        xml: MetroV4EvenOddBot,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    state_hnr: {
-        id: 'state_hnr',
-        name: 'Entry HNR',
-        xml: StateHNR,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    state_xv1: {
-        id: 'state_xv1',
-        name: 'Entry XV1',
-        xml: StateXV1,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    },
-    v4_even_odd: {
-        id: 'v4_even_odd',
-        name: 'V4 Even Odd Bot',
-        xml: V4EvenOddBot,
-        timestamp: Date.now(),
-        save_type: save_types.LOCAL,
-    }
 };
 
 const getStaticBots = () => Object.values(STATIC_BOTS);
