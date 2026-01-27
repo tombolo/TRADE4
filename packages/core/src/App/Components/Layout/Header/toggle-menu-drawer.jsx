@@ -362,32 +362,7 @@ const ToggleMenuDrawer = observer(({ platform_config }) => {
                                             current_language={current_language}
                                             setTogglePlatformType={setTogglePlatformType}
                                         />
-                                        {/* Social icons (mobile) */}
-                                        <div className='header__socials'>
-                                            <a href='https://t.me/finesttradershub' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
-                                                <Icon icon='IcTelegram' width={22} height={22} />
-                                            </a>
-                                            <a href='https://www.instagram.com/finestburu?igsh=aWt2N2NnanZlYXhw' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
-                                                <svg width='22' height='22' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' aria-hidden='true'>
-                                                    <defs>
-                                                        <linearGradient id='igGradMobile' x1='0%' y1='0%' x2='100%' y2='100%'>
-                                                            <stop offset='0%' stopColor='#F58529'/>
-                                                            <stop offset='30%' stopColor='#DD2A7B'/>
-                                                            <stop offset='60%' stopColor='#8134AF'/>
-                                                            <stop offset='100%' stopColor='#515BD4'/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <rect x='3' y='3' width='18' height='18' rx='5' ry='5' fill='none' stroke='url(#igGradMobile)' strokeWidth='2'/>
-                                                    <circle cx='12' cy='12' r='4.2' fill='none' stroke='url(#igGradMobile)' strokeWidth='2'/>
-                                                    <circle cx='17.2' cy='6.8' r='1.3' fill='url(#igGradMobile)'/>
-                                                </svg>
-                                            </a>
-                                            <a href='https://www.facebook.com/share/1FK1wCNKSi/' target='_blank' rel='noopener noreferrer' aria-label='TikTok'>
-                                                <svg width='22' height='22' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='#000000' aria-hidden='true'>
-                                                    <path d='M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.57-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z'/>
-                                                </svg>
-                                            </a>
-                                        </div>
+                                        
                                     </div>
                                 </MobileDrawer.SubHeader>
                             )}
