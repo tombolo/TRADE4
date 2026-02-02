@@ -133,20 +133,7 @@ const DTraderHeader = observer(() => {
                             <div className='header__divider' />
                             <TradersHubHomeButton />
                             {/* Social icons cluster (before platform switcher on desktop) */}
-                            <div className='header__socials'>
-                                <a href='https://www.facebook.com/share/1Z3hsLptfY/?mibextid=wwXIfr' target='_blank' rel='noopener noreferrer' aria-label='Facebook'>
-                                    <Icon icon='IcFacebook' width={20} height={20} />
-                                </a>
-                                <a href='' target='_blank' rel='noopener noreferrer' aria-label='WhatsApp'>
-                                    <Icon icon='IcWhatsappFilled' width={20} height={20} />
-                                </a>
-                                <a href='' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
-                                    <Icon icon='IcTelegram' width={20} height={20} />
-                                </a>
-                                <a href='https://www.instagram.com/kajo_joka?igsh=MTZuOWs3ZXBjaTh1bw%3D%3D' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
-                                    <InstagramIcon />
-                                </a>
-                            </div>
+                           
                             <PlatformSwitcher
                                 app_routing_history={app_routing_history}
                                 platform_config={filterPlatformsForClients(platform_config)}
