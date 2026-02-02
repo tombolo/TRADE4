@@ -121,20 +121,7 @@ const DefaultHeader = observer(() => {
                             <div className='header__divider' />
                             <TradersHubHomeButton />
                             <div className='header__left-stack'>
-                                <div className='header__socials'>
-                                    <a href='https://www.facebook.com/finesttradershub' target='_blank' rel='noopener noreferrer' aria-label='Facebook'>
-                                        <Icon icon='IcFacebook' width={20} height={20} />
-                                    </a>
-                                    <a href='http://wa.me/254753668073' target='_blank' rel='noopener noreferrer' aria-label='WhatsApp'>
-                                        <Icon icon='IcWhatsappFilled' width={20} height={20} />
-                                    </a>
-                                    <a href='https://t.me/finesttradershub' target='_blank' rel='noopener noreferrer' aria-label='Telegram'>
-                                        <Icon icon='IcTelegram' width={20} height={20} />
-                                    </a>
-                                    <a href='https://www.instagram.com/finestburu?igsh=aWt2N2NnanZlYXhw' target='_blank' rel='noopener noreferrer' aria-label='Instagram'>
-                                        <InstagramIcon />
-                                    </a>
-                                </div>
+                                
                                 {!should_hide_platform_switcher && (
                                     <PlatformSwitcher
                                         app_routing_history={app_routing_history}
